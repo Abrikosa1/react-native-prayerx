@@ -8,6 +8,7 @@ import Tasks from "./screens/TasksScreen";
 import TaskScreen from "./screens/TaskScreen";
 import PrayIcon from 'react-native-vector-icons/FontAwesome5'; 
 import SubscribedScreen from "./screens/SubscribedScreen";
+import ColumnSettingsScreen from "./screens/ColumnSettingsScreen";
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -57,19 +58,35 @@ export const addTasksRoutes = (Stack: any) => {
         }} 
       />
       <Stack.Screen
-        options={({ route }: any) => ({
+        options={({ navigation, route }: any) => ({
           headerTitle: route.params.name.title,
           headerTitleAlign: 'center',
           headerStyle: styles.header,
           headerTitleStyle: styles.headerText,
           headerRight: () => {
             return (
-              <Icon style={styles.settingsIcon} name={'settings'} size={24} color="#72A8BC" onPress={() => Alert.alert('Settings')}/>
+              <Icon 
+              style={styles.settingsIcon} 
+              name={'settings'} size={24} 
+              color="#72A8BC" 
+              onPress={() => 
+                navigation.navigate('ColumnSettingsScreen', {
+                  title: route.params.name.title,
+                  id: route.params.name.id
+              })}/>
             )
           }
         })}
         name="List"
         component={List}
+      />
+      <Stack.Screen 
+      name="ColumnSettingsScreen" 
+      component={ColumnSettingsScreen}
+      options={({ navigation, route }: any) => ({
+          headerTitle: 'Settings',
+          headerTitleAlign: 'center'
+      })}
       />
     </>
   );

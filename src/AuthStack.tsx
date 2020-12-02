@@ -5,9 +5,13 @@ import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from "rea
 
 import Icon from 'react-native-vector-icons/EvilIcons';
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { addUser, setCurrentUser } from "./store/UsersSlice";
+import { setCurrentUser } from "./store/UsersSlice";
 import { State, User } from "./types";
 import { AuthNavProps, AuthParamList } from "./params/AuthParamList";
+import { loadData } from "./store/DataSlice";
+
+import { userSagaActions } from "./store/UsersSagas/userSagaActions";
+import { dataSagaActions } from "./store/DataSagas/dataSagaActions";
 
 interface AuthStackProps {}
 
@@ -15,21 +19,14 @@ const Stack = createStackNavigator<AuthParamList>();
 
 function Login({ navigation }: AuthNavProps<"Login">) {
   const dispatch = useDispatch();
-  const [user, setUser] = useState<User>({
-    id: '',
-    username: '',
+  const [user, setUser] = useState({
     email: '',
     password: ''
   });
-  const selectUser = (state: State) => state.user.users;
-  const registeredUsers = useSelector(selectUser, shallowEqual);
+
 
   const login = () => {
-    for (let i = 0; i < registeredUsers.length; i++)
-      if (registeredUsers[i].username === user.username && registeredUsers[i].password === user.password) {
-      dispatch(setCurrentUser(registeredUsers[i]));
-      break;
-    }
+    dispatch({type: userSagaActions.SIGN_IN, payload: {email: user.email, password: user.password}});
   };
 
   return (
@@ -38,14 +35,15 @@ function Login({ navigation }: AuthNavProps<"Login">) {
       <View style={styles.registerView}>
         <TextInput
           style={styles.input}
-          placeholder="Username..."
+          placeholder="Email..."
           underlineColorAndroid="transparent"
-          onChangeText={username => setUser(user => ({...user, username: username}))}
+          onChangeText={email => setUser(user => ({...user, email: email}))}
         />
         <TextInput
           style={styles.input}
           placeholder="Password..."
           underlineColorAndroid="transparent"
+          keyboardType={'email-address'}
           secureTextEntry={true}
           onChangeText={password => setUser(user => ({...user, password: password}))}
         />
@@ -71,20 +69,20 @@ const Register = React.memo(({ navigation, route }: AuthNavProps<"Register">) =>
   const dispatch = useDispatch();
   const [showWarn, setShowWarn] = useState(false);
   const [user, setUser] = useState<User>({
-    id: '',
-    username: '',
+    id: 0,
     email: '',
-    password: ''
+    name: '',
+    token: ''
   });
   const register = () => {
-    if(user.username && user.email && user.password) {
-      dispatch(addUser(user));
-      navigation.navigate("Login");
-    }
-    else {
-      setShowWarn(true);
-      setTimeout(() => setShowWarn(false), 3000);
-    }
+    // if(user.username && user.email && user.password) {
+    //   dispatch(addUser(user));
+    //   navigation.navigate("Login");
+    // }
+    // else {
+    //   setShowWarn(true);
+    //   setTimeout(() => setShowWarn(false), 3000);
+    // }
   }
   return (
     <>

@@ -51,31 +51,21 @@ const initialLists: Array<List> = [
 ]
 
 const state: Data = {
-  lists: initialLists,
-  tasks: initialTasks,
-  comments: initialComments
+  lists: [],
+  tasks: [],
+  comments: []
 }
-
-
-export const fetchColumns = createAsyncThunk('users/fetchAll', async () => {
-
-})
-
-const  ff = async () => {
-  const response = await fetch('http://trello-purrweb.herokuapp.com/columns', {
-    headers: {
-      Authorization: 'deniska'
-    }
-  });
-  const cols = response.json();
-  console.log(cols)
-}
-  ff();
 
 const DataSlice = createSlice({
   name: 'data',
   initialState: state,
   reducers: {
+    loadData(state, action) {
+      state.lists = [];
+    },
+    putData(state, action) {
+      state.lists = action.payload;
+    },
     addList(state, action) {
       state.lists.push({ id: uuidv4(), title: action.payload })
     },
@@ -113,6 +103,6 @@ const DataSlice = createSlice({
   }
 });
 
-export const { addList, removeTask, addComment, addTask } = DataSlice.actions;
+export const { loadData, putData, addList, removeTask, addComment, addTask } = DataSlice.actions;
 
 export default DataSlice.reducer;

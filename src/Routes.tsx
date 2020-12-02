@@ -19,22 +19,21 @@ export const Routes: React.FC<RoutesProps> = ({}) => {
   //const [user, setUser] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const selectCurrentUser = (state: State) => state.user.currentUser;
-  const currentUser: User = useSelector(selectCurrentUser, shallowEqual);
-
-  // useEffect(() => {
+  const selectCurrentUser = (state: State) => state.user;
+  const user = useSelector(selectCurrentUser, shallowEqual);
+  useEffect(() => {
     
-  //   setUser(curUser);
+    if(user) {
+      setLoading(false);
+    }
 
-  // }, [user]);
+  }, [user]);
 
-  // if (loading) {
-  //   return (
-  //     <Center>
-  //       <ActivityIndicator size="large" />
-  //     </Center>
-  //   );
-  // }
+  if (loading) {
+    return (
+        <ActivityIndicator size="large" />
+    );
+  }
   const MyTheme = {
     ...DefaultTheme,
     colors: {
@@ -45,7 +44,7 @@ export const Routes: React.FC<RoutesProps> = ({}) => {
 
   return (
     <NavigationContainer theme={MyTheme}>
-      {currentUser.username ? <ListsStack /> : <AuthStack />}
+      {user.token ? <ListsStack /> : <AuthStack />}
     </NavigationContainer>
   );
 };

@@ -39,7 +39,7 @@ const Tasks = ({ navigation, route }: any) => {
   //add task
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
-  const selectCurrentUser = (state: State) => state.user.currentUser;
+  const selectCurrentUser = (state: State) => state.user;
   const currentUser: User = useSelector(selectCurrentUser, shallowEqual);
   
   const handleChange = (newTaskTitle: string) => {
@@ -48,7 +48,7 @@ const Tasks = ({ navigation, route }: any) => {
   const inputRef: any = useRef(null);
   const handleSubmit = () => {
     if(newTaskTitle) {
-      dispatch(addTask({listId: route.params.itemId, title: newTaskTitle, username: currentUser.username}));
+      dispatch(addTask({listId: route.params.itemId, title: newTaskTitle, username: currentUser.name}));
       setNewTaskTitle('');
     }
     else {

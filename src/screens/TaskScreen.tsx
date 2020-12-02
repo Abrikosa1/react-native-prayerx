@@ -24,7 +24,7 @@ const TaskScreen: React.FC<IProps> = ({ navigation, route }) => {
   const comments:Array<Comment> = useSelector(selectCommentsByTaskId(route.params.task.id), shallowEqual);
 
   //later move to selector
-  const selectCurrentUsername = (state: State) => state.user.currentUser;
+  const selectCurrentUsername = (state: State) => state.user;
   const currentUser = useSelector(selectCurrentUsername, shallowEqual);
 
   const handleChange = (newCommentText: string) => {
@@ -33,7 +33,7 @@ const TaskScreen: React.FC<IProps> = ({ navigation, route }) => {
   const inputRef: any = useRef(null);
   const handleSubmit = () => {
     if(newComment) {
-      dispatch(addComment({taskId: route.params.task.id, text: newComment, author: currentUser.username}));
+      dispatch(addComment({taskId: route.params.task.id, text: newComment, author: currentUser.name}));
       setNewComment('');
     }
     else {

@@ -34,18 +34,13 @@ export type Data = {
 }
 
 export type User = {
-  id: string;
-  username: string;
+  id: number;
   email: string;
-  password: string;
-}
-
-export type Users = {
-  users: Array<User>;
-  currentUser: User;
+  name: string;
+  token: string;
 }
 
 export type State = {
   data: Data;
-  user: Users;
+  user: User;
 }

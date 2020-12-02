@@ -1,47 +1,32 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { User, Users } from '../types';
-import { v4 as uuidv4 } from 'uuid';
+import { User } from '../types';
 
-
-
-const user0Id = uuidv4(),
-      user1Id = uuidv4();
-
-const initialUsers: Array<User> = [
-  {id:user0Id, username: 'Admin', email: 'email@mail.ru', password: '123'},
-  {id:user1Id, username: 'Moderator', email: 'email@mail.ru', password: '111'},
-]
-
-const initialCurrentUser: User = {
-  id: '',
-  username: '',
+const user: User = {
+  id: 1,
   email: '',
-  password: ''
-};
-
-const UsersData: Users = {
-  users: initialUsers,
-  currentUser: initialCurrentUser
+  name: '',
+  token: '',
 }
 
 const UsersSlice = createSlice({
   name: 'usersData',
-  initialState: UsersData,
+  initialState: user,
   reducers: {
-    addUser(state, action) {
-      state.users.push({ 
-        id: uuidv4(), 
-        username: action.payload.username, 
-        email: action.payload.email, 
-        password: action.payload.password 
-      })
-    },
+    // addUser(state, action) {
+    //   state.push({ 
+    //     email: action.payload.email, 
+    //     password: action.payload.password 
+    //   })
+    // },
     setCurrentUser(state, action) {
-      state.currentUser = action.payload
+      state.id = action.payload.id
+      state.email = action.payload.email
+      state.name = action.payload.name
+      state.token = action.payload.token
     }
   }
 });
 
-export const { addUser, setCurrentUser } = UsersSlice.actions;
+export const { setCurrentUser } = UsersSlice.actions;
 
 export default UsersSlice.reducer;

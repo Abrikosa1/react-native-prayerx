@@ -1,6 +1,6 @@
 import { State } from "../types";
 
-export const selectCurrentUsername = (state: State) => state.user.currentUser;
+export const selectCurrentUsername = (state: State) => state.user;
 
 export const selectTasksByListId = (listId: string) => 
   (state: State) => state.data.tasks.filter(task => task.listId === listId);
