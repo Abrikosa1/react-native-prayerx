@@ -25,7 +25,9 @@ export function * signInSaga(action : any) {
         const data = yield call(fetchSignIn, action);
         if (data.hasOwnProperty('token')) {
             yield put(setCurrentUser(data));
-            yield put({type: dataSagaActions.LOAD_DATA, payload: {token: data.token}});
+            yield put({type: dataSagaActions.LOAD_LISTS, payload: {token: data.token}});
+            yield put({type: dataSagaActions.LOAD_TASKS, payload: {token: data.token}});
+            yield put({type: dataSagaActions.LOAD_COMMENTS, payload: {token: data.token}});
         }
     } catch (e) {
         yield put({type: "SIGN_IN_FAILED"});

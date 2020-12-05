@@ -1,33 +1,39 @@
 import React, { useState} from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
-import { SubscribedTask, Task } from '../types';
+import { Comment, State, SubscribedTask, Task } from '../types';
 import Icon from 'react-native-vector-icons/Feather';
 import PrayIcon from 'react-native-vector-icons/FontAwesome5';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { shallowEqual, useSelector } from 'react-redux';
 
 
 interface IProps {
-  task: Task | SubscribedTask;
+  task: Task;
 }
 
-const TaskCard: React.FC<IProps> = ({ task }) => {
+const TaskCard: React.FC<IProps> = React.memo(({ task }) => {
   const navigation = useNavigation();
-  const [toggleCheckBox, setToggleCheckBox] = useState(false)
+  const [toggleCheckBox, setToggleCheckBox] = useState(task.checked)
+
+    //later move to selector
+  const selectCommentsByTaskId = (taskId: number) => 
+    (state: State) => state.data.comments.filter((comment: Comment) => comment.cardId === taskId);
+  const comments:Array<Comment> = useSelector(selectCommentsByTaskId(task.id), shallowEqual);
   return (
     <View style={styles.taskWrapper}>
       <View style={styles.rect}></View>
       <CheckBox
         style={styles.checkBox}
-        disabled={false}
+        //disabled={false}
         tintColors={{true: '#424E75', false: '#514D47' }}
         value={toggleCheckBox}
         onValueChange={(newValue) => setToggleCheckBox(newValue)}
       />
       <View style={styles.taskBody}  >
-          <Text style={styles.taskText} onPress={() => navigation.navigate('TaskScreen', {task: task})}>
+          <Text style={styles.taskText} onPress={() => navigation.navigate('TaskScreen', { taskId: task.id })}>
             {task.title}
           </Text>
       </View>
@@ -36,7 +42,7 @@ const TaskCard: React.FC<IProps> = ({ task }) => {
       <View style={styles.icons}>
         <View style={styles.userIcon}>
             <Icon name={'user'} size={22} color="#72A8BC" />
-            <Text style={styles.iconText}>3</Text>
+            <Text style={styles.iconText}>{comments.length}</Text>
         </View>
          <View style={styles.prayIcon}>
             <PrayIcon name={'praying-hands'} size={22} color="#72A8BC" />
@@ -46,7 +52,7 @@ const TaskCard: React.FC<IProps> = ({ task }) => {
       </View>
     </View>
   )
-}
+});
 
 const styles = StyleSheet.create({
   taskWrapper: {
@@ -59,7 +65,8 @@ const styles = StyleSheet.create({
     height: 68,
     paddingRight: 15,
     paddingLeft: 15,
-    //width: '100%'
+    //marginRight: 15,
+    //marginLeft: 15,
   },
   checkBox: {
     marginRight: 15,
@@ -88,7 +95,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   iconText: {
-    marginLeft: 5
+    marginLeft: 5,
+    fontFamily: 'SFUIText-Regular',
   },
   taskBody: {
     width: '100%',
@@ -100,7 +108,8 @@ const styles = StyleSheet.create({
   taskText: {
     width: '100%',
     height: '100%',
-    textAlignVertical: 'center'
+    textAlignVertical: 'center',
+    fontFamily: 'SFUIText-Regular',
   }
 });
 

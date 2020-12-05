@@ -7,14 +7,21 @@ import { addTasksRoutes } from "./addTasksRoutes";
 
 import Icon from 'react-native-vector-icons/AntDesign';
 import AddListModal from "./components/AddListModal";
+import { State } from "./types";
+import { dataSagaActions } from "./store/DataSagas/dataSagaActions";
+
 
 interface HomeStackProps {}
 
 const Stack = createStackNavigator();
 
-function Lists({ navigation }: HomeStackNavProps<"Lists">) {
-  const selectLists = (state: any) => state;
-  const state = useSelector(selectLists, shallowEqual);
+function Lists({ navigation, route }: any) {
+  const selectCurrentUser = (state: State) => state.user;
+  const user = useSelector(selectCurrentUser, shallowEqual);
+
+  const selectLists = (state: State) => state.data.lists;
+  const lists = useSelector(selectLists, shallowEqual);
+  const dispatch = useDispatch();
   return (
       <FlatList
         style={{ marginBottom: 15}}
@@ -22,16 +29,20 @@ function Lists({ navigation }: HomeStackNavProps<"Lists">) {
           return (
             <View style={styles.list} >
               <TouchableOpacity
-                onPress={() => navigation.navigate("List", {
-                  name: item })}
+                onPress={() => {
+                 // dispatch({type: dataSagaActions.LOAD_TASKS, payload: {token: user.token}});
+                  navigation.navigate("List", {
+                  list: item })}
+                }
               >
                 <Text style={styles.text}>{item.title}</Text>
               </TouchableOpacity>
             </View> 
           );
         }}
-        keyExtractor={(list, id) => list + id}
-        data={state.data.lists}
+        keyExtractor={list => list.id.toString()}
+        data={lists}
+        extraData={lists}
       />
   );
 }
@@ -69,7 +80,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 17,
     lineHeight: 20.29,
-    fontFamily: 'SFUIText',
+    fontFamily: 'SFUIText-Regular',
   },
   list: {
     marginTop: 15,
@@ -88,6 +99,7 @@ const styles = StyleSheet.create({
     fontSize: 17, 
     lineHeight: 20.29,
     color: '#514D47',
+    fontFamily: 'SFUIText-Regular',
   },
   headerAddIcon: {
     position: 'absolute',

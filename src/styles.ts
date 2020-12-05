@@ -9,17 +9,20 @@ export const initStyles = StyleSheet.create({
     marginBottom: 15,
     padding: 15,
     borderWidth: 1,
+    fontFamily: 'SFUIText-Regular',
   },
   button: {
     height: 30,
     backgroundColor: '#BFB393',
     borderRadius: 15,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    fontFamily: 'SFUIText-Regular',
   },
   text: {
     textTransform: 'uppercase',
     color: '#FFFFFF',
+    fontFamily: 'SFUIText-Regular',
   },
   rightLeftPadding: {
     paddingRight: 15,

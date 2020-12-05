@@ -165,6 +165,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 48,
     textTransform: 'uppercase',
+    fontFamily: 'SFUIText-Regular',
+    //fontWeight: '800'
   },
   input: { 
     fontSize: 14,
@@ -176,6 +178,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
     padding: 15,
     borderWidth: 1,
+    fontFamily: 'SFUIText-Regular'
   },
   button: {
     height: 30,
@@ -189,6 +192,7 @@ const styles = StyleSheet.create({
   text: {
     textTransform: 'uppercase',
     color: '#FFFFFF',
+    fontFamily: 'SFUIText-Regular'
   },
   createAccounBtn: {
     height: 30,

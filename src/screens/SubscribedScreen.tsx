@@ -48,10 +48,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    fontFamily: 'SFUIText-Regular',
   },
   text: {
     textTransform: 'uppercase',
     color: '#FFFFFF',
+    fontFamily: 'SFUIText-Regular',
   },
 });
 export default SubscribedScreen;

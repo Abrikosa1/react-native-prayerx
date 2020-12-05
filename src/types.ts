@@ -1,31 +1,45 @@
 export type List = {
-  id: string;
+  id: number;
   title: string;
 }
 
 export type Task = {
-  id: string;
-  listId: string;
-  title: string;
-  description: string;
-  username: string;
-  complete: boolean;
-  createTime: string;
-}
+  id: number,
+  title: string,
+  description: string,
+  checked: boolean,
+  columnId: number
+} 
+// export type Task = {
+//   id: string;
+//   listId: string;
+//   title: string;
+//   description: string;
+//   username: string;
+//   complete: boolean;
+//   createTime: string;
+// }
 
 export type SubscribedTask = {
-  id: string;
+  id: number;
   title: string;
   complete: boolean;
 }
 
 export type Comment = {
-  id: string;
-  taskId: string;
-  text: string;
-  author: string;
-  createTime: string;
+  id: number;
+  body: string;
+  created: Date;
+  cardId: number;
+  userId: number;
 }
+// export type Comment = {
+//   id: string;
+//   taskId: string;
+//   text: string;
+//   author: string;
+//   createTime: string;
+// }
 
 export type Data = {
   lists: Array<List>;

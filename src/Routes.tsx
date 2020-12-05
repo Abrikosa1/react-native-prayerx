@@ -39,7 +39,7 @@ export const Routes: React.FC<RoutesProps> = ({}) => {
     colors: {
       ...DefaultTheme.colors,
       background: '#FFF'
-    },
+    }
   };
 
   return (

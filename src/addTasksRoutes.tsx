@@ -4,7 +4,7 @@ import { HomeStackNavProps, HomeParamList } from "./params/HomeParamList";
 import { StackNavigationState, TypedNavigator } from "@react-navigation/native";
 import Icon from 'react-native-vector-icons/Feather';
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import Tasks from "./screens/TasksScreen";
+import TasksScreen from "./screens/TasksScreen";
 import TaskScreen from "./screens/TaskScreen";
 import PrayIcon from 'react-native-vector-icons/FontAwesome5'; 
 import SubscribedScreen from "./screens/SubscribedScreen";
@@ -13,8 +13,10 @@ import ColumnSettingsScreen from "./screens/ColumnSettingsScreen";
 
 const Tab = createMaterialTopTabNavigator();
 
-function List({ route, navigation }: HomeStackNavProps<"Lists">) {
-  
+function List({ route, navigation }: any) {
+
+  //console.log(route);
+  //console.log(route.params.list.title);
   return (
     <Tab.Navigator 
       swipeEnabled={false}
@@ -25,16 +27,17 @@ function List({ route, navigation }: HomeStackNavProps<"Lists">) {
           backgroundColor:'#72A8BC'
         },
         style: {
-          backgroundColor: '#FFF'
+          backgroundColor: '#FFF',
         },
         labelStyle: {
           fontSize: 13,
+          fontFamily: 'SFUIText-Regular',
         },
       }}>
       <Tab.Screen 
-        name="Task" 
-        component={Tasks} 
-        initialParams={{ itemId: route.params?.name.id }}
+        name="TasksScreen" 
+        component={TasksScreen} 
+        initialParams={{ itemId: route.params.list.id }}
       />
       <Tab.Screen name="SubscribedScreen" component={SubscribedScreen} />
     </Tab.Navigator>
@@ -54,12 +57,12 @@ export const addTasksRoutes = (Stack: any) => {
           headerStyle: styles.taskHeader,
           headerTitleStyle: styles.taskHeaderText,
           headerTitleAlign: 'left',
-          headerTintColor: '#FFF'
+          headerTintColor: '#FFF',
         }} 
       />
       <Stack.Screen
         options={({ navigation, route }: any) => ({
-          headerTitle: route.params.name.title,
+          headerTitle: route.params.list.title,
           headerTitleAlign: 'center',
           headerStyle: styles.header,
           headerTitleStyle: styles.headerText,
@@ -71,8 +74,8 @@ export const addTasksRoutes = (Stack: any) => {
               color="#72A8BC" 
               onPress={() => 
                 navigation.navigate('ColumnSettingsScreen', {
-                  title: route.params.name.title,
-                  id: route.params.name.id
+                  title: route.params.list.title,
+                  id: route.params.list.id
               })}/>
             )
           }
@@ -107,9 +110,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 17,
     lineHeight: 20.29,
-    fontFamily: 'SFUIText',
+    fontFamily: 'SFUIText-Regular',
   },
-    list: {
+  list: {
     marginTop: 15,
     marginLeft: 15,
     marginRight: 15,
@@ -126,6 +129,7 @@ const styles = StyleSheet.create({
     fontSize: 17, 
     lineHeight: 20.29,
     color: '#514D47',
+    fontFamily: 'SFUIText-Regular',
   },
   container: {
 
@@ -137,12 +141,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#BFB393',
     height: 65,
     borderBottomColor: '#BFB393',
-    elevation: 0, // remove shadow on Android
-    shadowOpacity: 0, // remove shadow on iOS
+    elevation: 0, 
+    shadowOpacity: 0, 
   },
   taskHeaderText: {
     color: '#FFF',
-    alignSelf: 'flex-end'
+    alignSelf: 'flex-end',
+    fontFamily: 'SFUIText-Regular',
   },
   taskHeaderIcon: {
     marginRight: 15

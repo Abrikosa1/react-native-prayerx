@@ -11,11 +11,11 @@ interface IProps {
 }
 
 const ColumnSettingsScreen: React.FC<IProps> = ({ navigation, route }) => {
+  const { params } = route;
   const dispatch = useDispatch();
   const selectCurrentUser = (state: State) => state.user;
   const user = useSelector(selectCurrentUser, shallowEqual);
-  const [newListTitle, setNewListTitle] = useState('');
-  const { params } = route;
+  const [newListTitle, setNewListTitle] = useState(params.title);
   const inputRef: any = useRef(null);
   const handlePressRenameList = () => {
     if(newListTitle) {
@@ -30,7 +30,7 @@ const ColumnSettingsScreen: React.FC<IProps> = ({ navigation, route }) => {
           }
         }
       });
-      navigation.pop();
+      navigation.navigate('List', {title: newListTitle});
     }
   }
   const handlePressRemoveList = () => {
@@ -42,9 +42,10 @@ const ColumnSettingsScreen: React.FC<IProps> = ({ navigation, route }) => {
         <TextInput
           ref={inputRef}
           style={initStyles.input}
-          placeholder={params.title}
+          placeholder='Type a title...'
           underlineColorAndroid="transparent"
           onChangeText={title => setNewListTitle(title)}
+          defaultValue={newListTitle}
         />
         <TouchableOpacity
           style={initStyles.button}
@@ -69,7 +70,8 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     marginTop: 'auto',
-    backgroundColor: '#AC5253'
+    backgroundColor: '#AC5253',
+    fontFamily: 'SFUIText-Regular',
   }
 })
 export default ColumnSettingsScreen;

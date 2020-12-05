@@ -7,15 +7,18 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import TaskCard from '../components/TaskCard';
 import { useRoute } from '@react-navigation/native';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import { addTask, removeTask } from '../store/DataSlice';
+import { dataSagaActions } from '../store/DataSagas/dataSagaActions';
 
 
 const Tasks = ({ navigation, route }: any) => {
   //later move to selectors
-  const selectTasksByListId = (listId: string) => 
-  (state: any) => state.data.tasks.filter((task: Task) => task.listId === listId);
-  const tasks:Array<Task> = useSelector(selectTasksByListId(route.params.itemId), shallowEqual);
+  const selectCurrentUser = (state: State) => state.user;
+  const user: User = useSelector(selectCurrentUser, shallowEqual);
 
+
+  const selectTasksByListId = (listId: number) => 
+  (state: State) => state.data.tasks.filter((task: Task) => task.columnId === listId);
+  const tasks = useSelector(selectTasksByListId(route.params.itemId), shallowEqual);
   const dispatch = useDispatch();
 
   const closeRow = (rowMap: any, rowKey: any) => {
@@ -27,7 +30,7 @@ const Tasks = ({ navigation, route }: any) => {
   const deleteRow = (rowMap: any, rowKey:any, taskId: string) => {
       closeRow(rowMap, rowKey);
       console.log(taskId)
-      dispatch(removeTask(taskId));
+      dispatch({type: dataSagaActions.REMOVE_TASK, payload: {token: user.token, id: taskId}});
   };
 
   const onRowDidOpen = (rowKey:any) => {
@@ -38,9 +41,6 @@ const Tasks = ({ navigation, route }: any) => {
 
   //add task
   const [newTaskTitle, setNewTaskTitle] = useState('');
-
-  const selectCurrentUser = (state: State) => state.user;
-  const currentUser: User = useSelector(selectCurrentUser, shallowEqual);
   
   const handleChange = (newTaskTitle: string) => {
     setNewTaskTitle(newTaskTitle)
@@ -48,7 +48,18 @@ const Tasks = ({ navigation, route }: any) => {
   const inputRef: any = useRef(null);
   const handleSubmit = () => {
     if(newTaskTitle) {
-      dispatch(addTask({listId: route.params.itemId, title: newTaskTitle, username: currentUser.name}));
+      //dispatch(addTask({listId: route.params.itemId, title: newTaskTitle, username: currentUser.name}));
+      dispatch({
+        type: dataSagaActions.ADD_TASK, payload: { 
+          token: user.token,
+          newTask: { 
+            title: newTaskTitle,
+            description: '', 
+            checked: false, 
+            column: route.params.itemId
+          }
+        }
+      });
       setNewTaskTitle('');
     }
     else {
@@ -57,7 +68,7 @@ const Tasks = ({ navigation, route }: any) => {
   }
   
   return (
-    <View>
+    <View style={{height: '100%'}}>
       <View style={styles.sectionStyle}>
         <Icon style={styles.icon}
             name={'plus'} size={22} color="#72A8BC"
@@ -75,8 +86,9 @@ const Tasks = ({ navigation, route }: any) => {
       {(tasks.length > 0) && <SwipeListView
         disableRightSwipe={true}
         useFlatList={true}
+        extraData={tasks}
         data={tasks}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
         renderItem={ ({ item, index, separators }) => 
             <TaskCard key={item.id} task={item}/>
         }
@@ -88,21 +100,25 @@ const Tasks = ({ navigation, route }: any) => {
             >
               <Text style={styles.backRightBtnRightText}>Delete</Text>
             </TouchableOpacity>
-          </View>)
-          }
+          </View>)}
         rightOpenValue={-80}
         previewRowKey={'0'}
         previewOpenValue={-40}
         previewOpenDelay={3000}
         onRowDidOpen={onRowDidOpen}
         onSwipeValueChange={onSwipeValueChange}
+        ListFooterComponent={
+          <>
+            {(tasks.length > 0) && 
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => Alert.alert('Show checked')}
+            >
+              <Text style={styles.text}> Show Answered Prayers</Text>
+            </TouchableOpacity>} 
+          </>
+        }
       />}
-      {(tasks.length > 0) && <TouchableOpacity
-        style={styles.button}
-        onPress={() => Alert.alert('Show checked')}
-      >
-        <Text style={styles.text}> Show Answered Prayers</Text>
-      </TouchableOpacity>} 
     </View>
   )
 };
@@ -112,7 +128,8 @@ const styles = StyleSheet.create({
   input: { 
     flex: 1,
     fontSize: 14,
-    paddingRight: 15
+    paddingRight: 15,
+    fontFamily: 'SFUIText-Regular',
   },
   sectionStyle: {
     flexDirection: 'row',
@@ -136,15 +153,20 @@ const styles = StyleSheet.create({
     height: 30,
     backgroundColor: '#BFB393',
     borderRadius: 15,
-    marginRight: 15,
-    marginLeft: 15,
+    paddingRight: 15,
+    paddingLeft: 15,
     marginTop: 20,
+    marginBottom: 20,
+    minWidth: 209,
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'center',
+    fontFamily: 'SFUIText-Regular',
   },
   text: {
     textTransform: 'uppercase',
     color: '#FFFFFF',
+    fontFamily: 'SFUIText-Regular',
   },
   rowBack: {
     alignItems: 'center',
@@ -156,13 +178,15 @@ const styles = StyleSheet.create({
     width: 80,
     alignSelf: 'flex-end',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    fontFamily: 'SFUIText-Regular',
   },
   backRightBtnRightText: {
     color: '#FFF',
     textTransform: 'none',
     fontSize: 13,
-    lineHeight: 15
+    lineHeight: 15,
+    fontFamily: 'SFUIText-Regular',
   }
 });
 
