@@ -1,5 +1,5 @@
 import { all } from "redux-saga/effects";
-import { watchLoadLists, watchAddList, watchRemoveList, watchRenameList, watchAddTask, watchLoadComments, watchLoadTasks, watchRemoveTask, watchAddComment, watchRemoveComment } from "./DataSagas/dataSagas";
+import { watchLoadLists, watchAddList, watchRemoveList, watchRenameList, watchAddTask, watchLoadComments, watchLoadTasks, watchRemoveTask, watchAddComment, watchRemoveComment, watchUpdateTask } from "./DataSagas/dataSagas";
 import { watchLogIn } from "./UsersSagas/userSagas";
 
 export default function *rootSaga() {
@@ -14,6 +14,7 @@ export default function *rootSaga() {
     watchAddTask(), 
     watchRemoveTask(), 
     watchAddComment(), 
-    watchRemoveComment()
+    watchRemoveComment(),
+    watchUpdateTask(),
   ])
 }

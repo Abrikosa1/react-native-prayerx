@@ -19,6 +19,9 @@ const TasksScreen = ({ navigation, route }: any) => {
   const selectTasksByListId = (listId: number) => 
   (state: State) => state.data.tasks.filter((task: Task) => task.columnId === listId);
   const tasks = useSelector(selectTasksByListId(route.params.itemId), shallowEqual);
+  const unCheckedTasks =  tasks.filter(task => !task.checked);
+  const checkedTasks = tasks.filter(task => task.checked);
+  //console.log(checkedTasks);
   const dispatch = useDispatch();
 
   const closeRow = (rowMap: any, rowKey: any) => {
@@ -39,6 +42,8 @@ const TasksScreen = ({ navigation, route }: any) => {
   const onSwipeValueChange = (swipeData: any) => {
   };
 
+  //show checked 
+  const [showChecked, setShowChecked] = useState(false);
   //add task
   const [newTaskTitle, setNewTaskTitle] = useState('');
   
@@ -68,7 +73,7 @@ const TasksScreen = ({ navigation, route }: any) => {
   }
   
   return (
-    <View style={{height: '100%'}}>
+    <>
       <View style={styles.sectionStyle}>
         <Icon style={styles.icon}
             name={'plus'} size={22} color="#72A8BC"
@@ -86,11 +91,11 @@ const TasksScreen = ({ navigation, route }: any) => {
       {(tasks.length > 0) && <SwipeListView
         disableRightSwipe={true}
         useFlatList={true}
-        extraData={tasks}
-        data={tasks}
+        extraData={unCheckedTasks}
+        data={unCheckedTasks}
         keyExtractor={item => item.id.toString()}
         renderItem={ ({ item, index, separators }) => 
-            <TaskCard key={item.id} task={item}/>
+          <TaskCard key={item.id} task={item}/>
         }
         renderHiddenItem={(data:any, rowMap: any) => (
           <View style={styles.rowBack}>
@@ -109,17 +114,43 @@ const TasksScreen = ({ navigation, route }: any) => {
         onSwipeValueChange={onSwipeValueChange}
         ListFooterComponent={
           <>
-            {(tasks.length > 0) && 
+            {unCheckedTasks.length === 0 && <Text style={styles.messageText}>No unanswered prayers, press button to see answered...</Text>}
+            {(checkedTasks.length > 0) && 
             <TouchableOpacity
               style={styles.button}
-              onPress={() => Alert.alert('Show checked')}
+              onPress={() => setShowChecked(!showChecked)}
             >
-              <Text style={styles.text}> Show Answered Prayers</Text>
+              <Text style={styles.text}>{showChecked ? 'Hide Answered Prayers' : 'Show Answered Prayers'}</Text>
             </TouchableOpacity>} 
+            {showChecked && <SwipeListView
+              disableRightSwipe={true}
+              useFlatList={true}
+              extraData={checkedTasks}
+              data={checkedTasks}
+              keyExtractor={item => item.id.toString()}
+              renderItem={ ({ item, index, separators }) => 
+                <TaskCard key={item.id} task={item}/>
+              }
+              renderHiddenItem={(data:any, rowMap: any) => (
+                <View style={styles.rowBack}>
+                  <TouchableOpacity
+                    style={styles.backRightBtnRight}
+                    onPress={() => deleteRow(rowMap, data.item.key, data.item.id)}
+                  >
+                    <Text style={styles.backRightBtnRightText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>)}
+              rightOpenValue={-80}
+              previewRowKey={'0'}
+              previewOpenValue={-40}
+              previewOpenDelay={3000}
+              onRowDidOpen={onRowDidOpen}
+              onSwipeValueChange={onSwipeValueChange}
+            />}
           </>
         }
       />}
-    </View>
+    </>
   )
 };
 
@@ -185,6 +216,17 @@ const styles = StyleSheet.create({
     color: '#FFF',
     textTransform: 'none',
     fontSize: 13,
+    lineHeight: 15,
+    fontFamily: 'SFUIText-Regular',
+  },
+  messageText:{
+    alignSelf: 'center',
+    textAlign: 'center',
+    paddingLeft: 15,
+    paddingRight: 15,
+    color: '#514D47',
+    textTransform: 'none',
+    fontSize: 15,
     lineHeight: 15,
     fontFamily: 'SFUIText-Regular',
   }

@@ -266,3 +266,36 @@ function *removeCommentSaga(action: any) {
 export function *watchRemoveComment() {
     yield takeEvery(dataSagaActions.REMOVE_COMMENT, removeCommentSaga);
 }
+
+
+//UPDATE_TASK
+function fetchUpdateTask(action: any) {
+    const url = "http://trello-purrweb.herokuapp.com/cards/" + action.payload.taskId;
+    return fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Authorization': 'Bearer ' + action.payload.token,
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(action.payload.newTask)
+    })
+    .then((response : any) => {
+      if (!response.ok) { throw response }
+      return response.json()
+    })
+    .catch((error : any) => console.log('Error: ', error));
+}
+
+function *updateTaskSaga(action: any) {
+
+    try {
+        const data = yield call(fetchUpdateTask, action);
+        yield put({type:dataSagaActions.LOAD_TASKS, payload: {token: action.payload.token}});
+    } catch (e) {
+        yield put({type: "UPDATE_TASK_FAILED"});
+    }
+}
+
+export function *watchUpdateTask() {
+    yield takeEvery(dataSagaActions.UPDADE_TASK, updateTaskSaga);
+}

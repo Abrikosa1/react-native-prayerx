@@ -7,7 +7,8 @@ import PrayIcon from 'react-native-vector-icons/FontAwesome5';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { dataSagaActions } from '../store/DataSagas/dataSagaActions';
 
 
 interface IProps {
@@ -16,8 +17,27 @@ interface IProps {
 
 const TaskCard: React.FC<IProps> = React.memo(({ task }) => {
   const navigation = useNavigation();
-  const [toggleCheckBox, setToggleCheckBox] = useState(task.checked)
-
+  const [toggleCheckBox, setToggleCheckBox] = useState(task.checked);
+  const selectCurrentUser = (state: State) => state.user;
+  const user = useSelector(selectCurrentUser, shallowEqual);
+  const dispatch = useDispatch();
+  const handleValueChange = (newValue: boolean) => {
+    console.log(newValue);
+    setToggleCheckBox(newValue);
+    dispatch({
+      type: dataSagaActions.UPDADE_TASK, 
+      payload: { 
+        taskId: task.id,
+        token: user.token,
+        newTask: { 
+          title: task.title,
+          description: task.description,
+          checked: newValue,
+          column: task.columnId
+        }
+      }
+    });
+  } 
     //later move to selector
   const selectCommentsByTaskId = (taskId: number) => 
     (state: State) => state.data.comments.filter((comment: Comment) => comment.cardId === taskId);
@@ -30,10 +50,10 @@ const TaskCard: React.FC<IProps> = React.memo(({ task }) => {
         //disabled={false}
         tintColors={{true: '#424E75', false: '#514D47' }}
         value={toggleCheckBox}
-        onValueChange={(newValue) => setToggleCheckBox(newValue)}
+        onValueChange={(newValue) => handleValueChange(newValue)}
       />
       <View style={styles.taskBody}  >
-          <Text style={styles.taskText} onPress={() => navigation.navigate('TaskScreen', { taskId: task.id })}>
+          <Text style={[styles.taskText, toggleCheckBox && {textDecorationLine: 'line-through'}]} onPress={() => navigation.navigate('TaskScreen', { taskId: task.id })}>
             {task.title}
           </Text>
       </View>
