@@ -1,71 +1,13 @@
-import React, { useContext, useState } from "react";
-import { createStackNavigator } from "@react-navigation/stack";
-
-import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-
-import Icon from 'react-native-vector-icons/EvilIcons';
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { setCurrentUser } from "./store/UsersSlice";
-import { State, User } from "./types";
-import { AuthNavProps, AuthParamList } from "./params/AuthParamList";
-import { loadData } from "./store/DataSlice";
-
-import { userSagaActions } from "./store/UsersSagas/userSagaActions";
-import { dataSagaActions } from "./store/DataSagas/dataSagaActions";
-
-interface AuthStackProps {}
-
-const Stack = createStackNavigator<AuthParamList>();
-
-function Login({ navigation }: AuthNavProps<"Login">) {
-  const dispatch = useDispatch();
-  const [user, setUser] = useState({
-    email: '',
-    password: ''
-  });
+import React, { useState } from "react";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import Icon from "react-native-vector-icons/AntDesign";
 
 
-  const login = () => {
-    dispatch({type: userSagaActions.SIGN_IN, payload: {email: user.email, password: user.password}});
-  };
+import { useDispatch } from "react-redux";
+import { AuthNavProps } from "../params/AuthParamList";
+import { User } from "../types";
 
-  return (
-    <>
-      <Text style={styles.heading}>LOGIN</Text>
-      <View style={styles.registerView}>
-        <TextInput
-          style={styles.input}
-          placeholder="Email..."
-          underlineColorAndroid="transparent"
-          onChangeText={email => setUser(user => ({...user, email: email}))}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password..."
-          underlineColorAndroid="transparent"
-          keyboardType={'email-address'}
-          secureTextEntry={true}
-          onChangeText={password => setUser(user => ({...user, password: password}))}
-        />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={login}
-        >
-          <Text style={styles.text}>Log In</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.createAccounBtn}
-          onPress={() => navigation.navigate('Register')}
-        >
-          <Text style={styles.createAccounBtnText}>Create Account</Text>
-        </TouchableOpacity>
-      </View>
-    </>
-  );
-}
-
-const Register = React.memo(({ navigation, route }: AuthNavProps<"Register">) => {
+const RegisterScreen = React.memo(({ navigation, route }: AuthNavProps<"Register">) => {
   const dispatch = useDispatch();
   const [showWarn, setShowWarn] = useState(false);
   const [user, setUser] = useState<User>({
@@ -129,31 +71,6 @@ const Register = React.memo(({ navigation, route }: AuthNavProps<"Register">) =>
   );
 });
 
-export const AuthStack: React.FC<AuthStackProps> = ({}) => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        header: () => null
-      }}
-      initialRouteName="Login"
-    >
-      <Stack.Screen
-        options={{
-          headerTitle: "Sign In"
-        }}
-        name="Login"
-        component={Login}
-      />
-      <Stack.Screen
-        options={{
-          headerTitle: "Sign Up"
-        }}
-        name="Register"
-        component={Register}
-      />
-    </Stack.Navigator>
-  );
-};
 
 const styles = StyleSheet.create({
   registerView: {
@@ -165,8 +82,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 48,
     textTransform: 'uppercase',
-    fontFamily: 'SFUIText-Regular',
-    //fontWeight: '800'
+    fontFamily: 'SFUIText-Bold',
   },
   input: { 
     fontSize: 14,
@@ -221,3 +137,4 @@ const styles = StyleSheet.create({
 
 });
 
+export default RegisterScreen;

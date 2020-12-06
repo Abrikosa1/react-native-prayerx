@@ -6,15 +6,16 @@ import {
 import { DefaultTheme, NavigationContainer, RouteProp } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
-import { AuthStack } from "./AuthStack";
+
 import { State, User } from "./types";
 import { shallowEqual, useSelector } from "react-redux";
-import { ListsStack } from "./ListsStack";
+import { ListsStack } from "./navigators/ListsStack";
+import AuthStack from "./navigators/AuthStack";
 
 
 interface RoutesProps {}
 
-export const Routes: React.FC<RoutesProps> = ({}) => {
+const Routes: React.FC<RoutesProps> = ({}) => {
   //const { user, login } = useContext(AuthContext);
   //const [user, setUser] = useState({});
   const [loading, setLoading] = useState(true);
@@ -48,3 +49,5 @@ export const Routes: React.FC<RoutesProps> = ({}) => {
     </NavigationContainer>
   );
 };
+
+export default Routes;

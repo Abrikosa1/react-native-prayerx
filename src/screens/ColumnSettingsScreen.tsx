@@ -30,7 +30,7 @@ const ColumnSettingsScreen: React.FC<IProps> = ({ navigation, route }) => {
           }
         }
       });
-      navigation.navigate('List', {title: newListTitle});
+      navigation.navigate('ListTabNavigator', {title: newListTitle});
     }
   }
   const handlePressRemoveList = () => {

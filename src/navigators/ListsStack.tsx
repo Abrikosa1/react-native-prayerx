@@ -1,54 +1,27 @@
 import React from "react";
-import { TouchableOpacity, Text, Button, StyleSheet, Alert } from "react-native";
-import { HomeStackNavProps, HomeParamList } from "./params/HomeParamList";
-import { StackNavigationState, TypedNavigator } from "@react-navigation/native";
-import Icon from 'react-native-vector-icons/Feather';
+import { createStackNavigator } from "@react-navigation/stack";
+import { StyleSheet} from "react-native";
+import TasksScreen from "../screens/TasksScreen";
+import TaskScreen from "../screens/TaskScreen";
+import AddListModal from "../components/AddListModal";
+import ListsScreen from "../screens/ListsScreen";
+import ColumnSettingsScreen from "../screens/ColumnSettingsScreen";
+import SubscribedScreen from "../screens/SubscribedScreen";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import TasksScreen from "./screens/TasksScreen";
-import TaskScreen from "./screens/TaskScreen";
 import PrayIcon from 'react-native-vector-icons/FontAwesome5'; 
-import SubscribedScreen from "./screens/SubscribedScreen";
-import ColumnSettingsScreen from "./screens/ColumnSettingsScreen";
+import SettingsIcon from "react-native-vector-icons/Feather";
+import Icon from "react-native-vector-icons/Feather";
+import ListTabNavigator from "./ListTabNavigator";
 
 
-const Tab = createMaterialTopTabNavigator();
+interface HomeStackProps {}
 
-function List({ route, navigation }: any) {
+const Stack = createStackNavigator();
 
-  //console.log(route);
-  //console.log(route.params.list.title);
+export const ListsStack: React.FC<HomeStackProps> = ({}) => {
   return (
-    <Tab.Navigator 
-      swipeEnabled={false}
-      tabBarOptions={{
-        activeTintColor: '#72A8BC',
-        inactiveTintColor: '#C8C8C8',
-        indicatorStyle :{
-          backgroundColor:'#72A8BC'
-        },
-        style: {
-          backgroundColor: '#FFF',
-        },
-        labelStyle: {
-          fontSize: 13,
-          fontFamily: 'SFUIText-Regular',
-        },
-      }}>
-      <Tab.Screen 
-        name="TasksScreen" 
-        component={TasksScreen} 
-        initialParams={{ itemId: route.params.list.id }}
-      />
-      <Tab.Screen name="SubscribedScreen" component={SubscribedScreen} />
-    </Tab.Navigator>
-  );
-} 
-
-
-export const addTasksRoutes = (Stack: any) => {
-  return (
-    <>
-      <Stack.Screen 
+    <Stack.Navigator initialRouteName="ListsScreen" >
+       <Stack.Screen 
         name='TaskScreen' 
         component={TaskScreen} 
         options={{
@@ -64,11 +37,11 @@ export const addTasksRoutes = (Stack: any) => {
         options={({ navigation, route }: any) => ({
           headerTitle: route.params.list.title,
           headerTitleAlign: 'center',
-          headerStyle: styles.header,
-          headerTitleStyle: styles.headerText,
+          headerStyle: styles.listScreenHeader,
+          headerTitleStyle: styles.listScrenHeaderText,
           headerRight: () => {
             return (
-              <Icon 
+              <SettingsIcon 
               style={styles.settingsIcon} 
               name={'settings'} size={24} 
               color="#72A8BC" 
@@ -80,8 +53,8 @@ export const addTasksRoutes = (Stack: any) => {
             )
           }
         })}
-        name="List"
-        component={List}
+        name="ListTabNavigator"
+        component={ListTabNavigator}
       />
       <Stack.Screen 
       name="ColumnSettingsScreen" 
@@ -91,12 +64,42 @@ export const addTasksRoutes = (Stack: any) => {
           headerTitleAlign: 'center'
       })}
       />
-    </>
+      <Stack.Screen
+        name="ListsScreen"
+        options={({ navigation, route }) => ({
+          headerTitle: 'My Desk',
+          headerRight: () => <Icon style={styles.headerAddIcon} name={'plus'} size={16} color="#72A8BC" onPress={() => navigation.navigate('AddListModal')}/> ,
+          headerStyle: styles.header,
+          headerTitleStyle: styles.headerText,
+          headerTitleAlign: 'center',
+        })} 
+        component={ListsScreen}
+      />
+      <Stack.Screen name='AddListModal' component={AddListModal} options={{ headerShown: false }}/>
+    </Stack.Navigator>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
+    height: 64,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
+    backgroundColor: '#FFFFFF',
+  },
+  headerText: {
+    display: 'flex',
+    justifyContent: 'center',
+    textAlign: 'center',
+    fontSize: 17,
+    lineHeight: 20.29,
+    fontFamily: 'SFUIText-Regular',
+  },
+  headerAddIcon: {
+    position: 'absolute',
+    right: 15,
+  },
+  listScreenHeader: {
     height: 64,
     //borderBottomWidth: 1,
     borderBottomColor: '#E5E5E5',
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
     elevation: 0, // remove shadow on Android
     shadowOpacity: 0, // remove shadow on iOS
   },
-  headerText: {
+  listScrenHeaderText: {
     display: 'flex',
     justifyContent: 'center',
     textAlign: 'center',

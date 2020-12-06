@@ -10,7 +10,7 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import { dataSagaActions } from '../store/DataSagas/dataSagaActions';
 
 
-const Tasks = ({ navigation, route }: any) => {
+const TasksScreen = ({ navigation, route }: any) => {
   //later move to selectors
   const selectCurrentUser = (state: State) => state.user;
   const user: User = useSelector(selectCurrentUser, shallowEqual);
@@ -190,4 +190,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Tasks;
+export default TasksScreen;

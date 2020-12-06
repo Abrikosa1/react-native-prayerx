@@ -10,15 +10,18 @@ interface IProps {
 
 const CommentComponent: React.FC<IProps> = ({comment, user}) => {
   const date: Date = new Date(comment.created);
-  var daysLag = Math.ceil(Math.abs(date.getTime() - Date.now()) / (1000 * 3600 * 24));
+  const daysLag = Math.ceil(Math.abs(date.getTime() - Date.now()) / (1000 * 3600 * 24));
   const time = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+
+  const maybePluralize = (count: number, noun: string, suffix = 's') =>
+  `${count} ${noun}${count !== 1 ? suffix : ''}`;
   return(
     <View style={[styles.commentContainer, initStyles.rightLeftPadding]}>
       <View style={styles.commentAuthorIcon}></View>
       <View>
         <View style={styles.authorAndCreatedTime}>
           <Text style={[styles.commentCommonText, styles.commentAuthor]}>{user.name}</Text>
-          <Text style={[styles.createdTime]}>{daysLag > 0 ? `created ${daysLag} days ago` : `created today at ${time}`}</Text>
+          <Text style={[styles.createdTime]}>{daysLag === 0 ?  `created today at ${time}` : `created ${maybePluralize(daysLag, 'day')} ago`}</Text>
         </View>
         <Text style={[styles.commentCommonText, styles.commentText]}>{comment.body}</Text>
       </View>
