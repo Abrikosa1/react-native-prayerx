@@ -1,10 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import dataReducer from './DataSlice';
 import usersReducer from './UsersSlice';
+import loginReducer from './LoginSlice';
 
 const rootReducer = combineReducers({
   data: dataReducer,
-  user: usersReducer 
+  user: usersReducer,
+  loginData: loginReducer, 
 })
 
 

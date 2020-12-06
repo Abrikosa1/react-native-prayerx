@@ -22,19 +22,20 @@ const Routes: React.FC<RoutesProps> = ({}) => {
 
   const selectCurrentUser = (state: State) => state.user;
   const user = useSelector(selectCurrentUser, shallowEqual);
-  useEffect(() => {
+  // useEffect(() => {
     
-    if(user) {
-      setLoading(false);
-    }
+  //   if(user) {
+  //     setLoading(false);
+  //   }
 
-  }, [user]);
+  // }, [user]);
 
-  if (loading) {
-    return (
-        <ActivityIndicator size="large" />
-    );
-  }
+  // if (loading) {
+  //   return (
+  //       <ActivityIndicator size="large" />
+  //   );
+  // }
+
   const MyTheme = {
     ...DefaultTheme,
     colors: {

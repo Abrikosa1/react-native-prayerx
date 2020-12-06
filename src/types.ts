@@ -10,15 +10,6 @@ export type Task = {
   checked: boolean,
   columnId: number
 } 
-// export type Task = {
-//   id: string;
-//   listId: string;
-//   title: string;
-//   description: string;
-//   username: string;
-//   complete: boolean;
-//   createTime: string;
-// }
 
 export type SubscribedTask = {
   id: number;
@@ -33,13 +24,6 @@ export type Comment = {
   cardId: number;
   userId: number;
 }
-// export type Comment = {
-//   id: string;
-//   taskId: string;
-//   text: string;
-//   author: string;
-//   createTime: string;
-// }
 
 export type Data = {
   lists: Array<List>;
@@ -54,7 +38,13 @@ export type User = {
   token: string;
 }
 
+export type LoginData = {
+  error: boolean;
+  errorMessage: string;
+}
+
 export type State = {
   data: Data;
   user: User;
+  loginData: LoginData;
 }

@@ -5,26 +5,26 @@ import Icon from "react-native-vector-icons/AntDesign";
 
 import { useDispatch } from "react-redux";
 import { AuthNavProps } from "../params/AuthParamList";
+import { userSagaActions } from "../store/UsersSagas/userSagaActions";
 import { User } from "../types";
 
 const RegisterScreen = React.memo(({ navigation, route }: AuthNavProps<"Register">) => {
   const dispatch = useDispatch();
   const [showWarn, setShowWarn] = useState(false);
-  const [user, setUser] = useState<User>({
-    id: 0,
+  const [user, setUser] = useState({
     email: '',
     name: '',
-    token: ''
+    password: ''
   });
   const register = () => {
-    // if(user.username && user.email && user.password) {
-    //   dispatch(addUser(user));
-    //   navigation.navigate("Login");
-    // }
-    // else {
-    //   setShowWarn(true);
-    //   setTimeout(() => setShowWarn(false), 3000);
-    // }
+    if(user.name && user.email && user.password) {
+      dispatch({type: userSagaActions.SIGN_UP, payload: user});
+      navigation.navigate("Login");
+    }
+    else {
+      setShowWarn(true);
+      setTimeout(() => setShowWarn(false), 3000);
+    }
   }
   return (
     <>
@@ -40,20 +40,20 @@ const RegisterScreen = React.memo(({ navigation, route }: AuthNavProps<"Register
       <Text style={styles.heading}>Registration</Text>
       <View style={styles.registerView}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, (showWarn && user.name==='') && styles.alertInput]}
           placeholder="Username..."
           underlineColorAndroid="transparent"
-          onChangeText={username => setUser(user => ({...user, username: username}))}
+          onChangeText={username => setUser(user => ({...user, name: username}))}
         />
         <TextInput
-          style={styles.input}
+          style={[styles.input, (showWarn && user.email==='') && styles.alertInput]}
           placeholder="Email..."
           keyboardType={'email-address'}
           underlineColorAndroid="transparent"
           onChangeText={email => setUser(user => ({...user, email: email}))}
         />
         <TextInput
-          style={styles.input}
+          style={[styles.input, (showWarn && user.password==='') && styles.alertInput]}
           placeholder="Password..."
           underlineColorAndroid="transparent"
           secureTextEntry={true}
@@ -65,7 +65,6 @@ const RegisterScreen = React.memo(({ navigation, route }: AuthNavProps<"Register
         >
           <Text style={styles.text}>Register</Text>
         </TouchableOpacity>
-        {showWarn && <Text style={styles.warn}>Enter all data...</Text>}
       </View>
     </>
   );
@@ -82,7 +81,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 48,
     textTransform: 'uppercase',
-    fontFamily: 'SFUIText-Bold',
+    fontFamily: 'SFUIText-Semibold',
   },
   input: { 
     fontSize: 14,
@@ -95,6 +94,9 @@ const styles = StyleSheet.create({
     padding: 15,
     borderWidth: 1,
     fontFamily: 'SFUIText-Regular'
+  },
+  alertInput: {
+    borderColor: '#AC5253',
   },
   button: {
     height: 30,
