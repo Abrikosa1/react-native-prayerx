@@ -12,6 +12,7 @@ import PrayIcon from 'react-native-vector-icons/FontAwesome5';
 import SettingsIcon from "react-native-vector-icons/Feather";
 import Icon from "react-native-vector-icons/Feather";
 import ListTabNavigator from "./ListTabNavigator";
+import TaskSettingsScreen from "../screens/TaskSettingsScreen";
 
 
 interface HomeStackProps {}
@@ -76,6 +77,17 @@ export const ListsStack: React.FC<HomeStackProps> = ({}) => {
         component={ListsScreen}
       />
       <Stack.Screen name='AddListModal' component={AddListModal} options={{ headerShown: false }}/>
+      <Stack.Screen 
+        name='TaskSettingsScreen' 
+        component={TaskSettingsScreen}
+        options={({ navigation, route }: any) => ({
+          headerTitle: 'Settings',
+
+          //headerStyle: styles.header,
+          //headerTitleStyle: styles.headerText,
+          headerTitleAlign: 'center',
+        })} 
+      />
     </Stack.Navigator>
   );
 };

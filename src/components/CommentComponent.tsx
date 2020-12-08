@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Dispatch, SetStateAction } from 'react';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { initStyles } from '../styles';
 import { Comment, User } from '../types';
 
@@ -21,7 +21,7 @@ const CommentComponent: React.FC<IProps> = ({comment, user}) => {
       <View>
         <View style={styles.authorAndCreatedTime}>
           <Text style={[styles.commentCommonText, styles.commentAuthor]}>{user.name}</Text>
-          <Text style={[styles.createdTime]}>{daysLag === 0 ?  `created today at ${time}` : `created ${maybePluralize(daysLag, 'day')} ago`}</Text>
+          <Text style={[styles.createdTime]}>{daysLag === 0 ?  `today at ${time}` : `${maybePluralize(daysLag, 'day')} ago`}</Text>
         </View>
         <Text style={[styles.commentCommonText, styles.commentText]}>{comment.body}</Text>
       </View>
@@ -66,12 +66,14 @@ const styles = StyleSheet.create({
     color: '#514D47',
   },
   commentAuthor: {
-    //fontWeight: '600',
     fontFamily: 'SFUIText-Semibold'
   },
   commentText: {
-    //fontWeight: '400',
     fontFamily: 'SFUIText-Regular'
+  },
+  input: {
+    margin: 0,
+    padding: 0
   }
 })
 export default CommentComponent;

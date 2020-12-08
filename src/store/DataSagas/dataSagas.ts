@@ -299,3 +299,37 @@ function *updateTaskSaga(action: any) {
 export function *watchUpdateTask() {
     yield takeEvery(dataSagaActions.UPDADE_TASK, updateTaskSaga);
 }
+
+
+//UPDATE_COMMENT
+function fetchUpdateComment(action: any) {
+    const url = "http://trello-purrweb.herokuapp.com/comments/" + action.payload.commentId;
+    return fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Authorization': 'Bearer ' + action.payload.token,
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(action.payload.newComment)
+    })
+    .then((response : any) => {
+      if (!response.ok) { throw response }
+      return response.json()
+    })
+    .catch((error : any) => console.log('Error: ', error));
+}
+
+function *updateCommentSaga(action: any) {
+    console.log('fsdfsdf')
+    try {
+        const data = yield call(fetchUpdateComment, action);
+        console.log(data)
+        yield put({type:dataSagaActions.LOAD_COMMENTS, payload: {token: action.payload.token}});
+    } catch (e) {
+        yield put({type: "UPDATE_COMMENT_FAILED"});
+    }
+}
+
+export function *watchUpdateComment() {
+    yield takeEvery(dataSagaActions.UPDATE_COMMENT, updateCommentSaga);
+}

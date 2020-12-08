@@ -5,7 +5,7 @@ import TaskCard from '../components/TaskCard';
 import { v4 as uuidv4 } from 'uuid';
 
 
-const subscribedTasks: Array<SubscribedTask> = [
+const subscribedTasks = [
   { id: 24234, title: 'Subscribed Task #1', complete: false }, 
   { id: 23423, title: 'Subscribed Task #2', complete: true }, 
   { id: 234231234, title: 'Subscribed Task #3', complete: true },
@@ -15,18 +15,19 @@ const subscribedTasks: Array<SubscribedTask> = [
 const SubscribedScreen = () => {
   return (
     <View>
-       <FlatList 
+      <Text>SubscribedScreen</Text>
+       {/* <FlatList 
         showsVerticalScrollIndicator={false}
         style={styles.tasks} 
         data={subscribedTasks} 
         renderItem={({ item, index, separators }) => (<TaskCard key={item.id} task={item}/>)}
-      />  
-      <TouchableOpacity
+      />   */}
+      {/* <TouchableOpacity
         style={styles.button}
         onPress={() => Alert.alert('Show checked')}
       >
         <Text style={styles.text}> Show Answered Prayers</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   )
 };

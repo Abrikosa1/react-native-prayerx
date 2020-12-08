@@ -1,11 +1,10 @@
 import React, { useRef, useState } from 'react';
-import { Alert, Animated, FlatList, Image, ListView, ListViewBase, ScrollView, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { View, Text, TextInput } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { List, State, Task, Comment, Data, User } from '../types';
+import { State, Task,  User } from '../types';
 import Icon from 'react-native-vector-icons/AntDesign';
 import TaskCard from '../components/TaskCard';
-import { useRoute } from '@react-navigation/native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { dataSagaActions } from '../store/DataSagas/dataSagaActions';
 
@@ -21,7 +20,7 @@ const TasksScreen = ({ navigation, route }: any) => {
   const tasks = useSelector(selectTasksByListId(route.params.itemId), shallowEqual);
   const unCheckedTasks =  tasks.filter(task => !task.checked);
   const checkedTasks = tasks.filter(task => task.checked);
-  //console.log(checkedTasks);
+
   const dispatch = useDispatch();
 
   const closeRow = (rowMap: any, rowKey: any) => {
@@ -32,7 +31,6 @@ const TasksScreen = ({ navigation, route }: any) => {
 
   const deleteRow = (rowMap: any, rowKey:any, taskId: string) => {
       closeRow(rowMap, rowKey);
-      console.log(taskId)
       dispatch({type: dataSagaActions.REMOVE_TASK, payload: {token: user.token, id: taskId}});
   };
 

@@ -18,13 +18,18 @@ const LoginScreen: React.FC = ({ navigation }: any)  => {
   const loginData = useSelector(getLoginInfo, shallowEqual);
 
   useEffect(() => {
+    setLoading(false);
     if(loginData.error) {
-      setLoading(false);
+      
       setShowWarn(true);
-      setTimeout(() => setShowWarn(false), 3000);
+    //setTimeout(() => setShowWarn(false), 3000);
       dispatch(setErrors({error: false, errorMessage: ""}));
     }
   }, [loginData])
+
+  useEffect(() => {
+    setShowWarn(false)
+  }, [user])
 
   const login = () => {
     setLoading(true);

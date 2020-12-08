@@ -35,7 +35,7 @@ const ColumnSettingsScreen: React.FC<IProps> = ({ navigation, route }) => {
   }
   const handlePressRemoveList = () => {
     dispatch({type: dataSagaActions.REMOVE_LIST, payload: {token: user.token, id: params.id}});
-    navigation.navigate('Lists');
+    navigation.navigate('ListsScreen');
   }
   return(
     <View style={styles.settingsContainer}>
