@@ -31,7 +31,7 @@ const RegisterScreen = React.memo(({ navigation, route }: AuthNavProps<"Register
       <Icon
         style={styles.closeIcon}
         name={'close'}
-        size={40}
+        size={25}
         color="#AC5253"
         onPress={() => {
           navigation.pop();
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 32,
     alignSelf: 'center',
-    marginTop: 48,
+    marginTop: 25,
     textTransform: 'uppercase',
     fontFamily: 'SFUIText-Semibold',
   },

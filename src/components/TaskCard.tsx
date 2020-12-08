@@ -22,7 +22,6 @@ const TaskCard: React.FC<IProps> = React.memo(({ task }) => {
   const user = useSelector(selectCurrentUser, shallowEqual);
   const dispatch = useDispatch();
   const handleValueChange = (newValue: boolean) => {
-    console.log(newValue);
     setToggleCheckBox(newValue);
     dispatch({
       type: dataSagaActions.UPDADE_TASK, 

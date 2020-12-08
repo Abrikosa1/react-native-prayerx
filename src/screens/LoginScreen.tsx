@@ -37,11 +37,6 @@ const LoginScreen: React.FC = ({ navigation }: any)  => {
       type: userSagaActions.SIGN_IN, 
       payload: {email: user.email, password: user.password}
     });
-    // if(loginData.error) {
-    //   setShowWarn(true);
-    //   setTimeout(() => setShowWarn(false), 3000);
-    //   console.log(showWarn);
-    // }
   };
 
 
@@ -66,7 +61,7 @@ const LoginScreen: React.FC = ({ navigation }: any)  => {
         {showWarn && <View style={styles.errorMessage}>
           <Text style={styles.errorMessageText}>Login failed: Invalid email or password</Text>
         </View>}
-        {loading && <ActivityIndicator style={{marginBottom: 20}} size="large" color="#BFB393"/>}
+        {(loading && !showWarn) && <ActivityIndicator style={{marginBottom: 20}} size="large" color="#BFB393"/>}
         <TouchableOpacity
           style={styles.button}
           onPress={login}
@@ -92,7 +87,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 32,
     alignSelf: 'center',
-    marginTop: 48,
+    marginTop: 25,
     textTransform: 'uppercase',
     fontFamily: 'SFUIText-Semibold',
   },

@@ -66,13 +66,6 @@ function fetchSignUp(action : any) {
 export function * signUpSaga(action : any) {
     try {
         const data = yield call(fetchSignUp, action);
-        console.log(data)
-        // if (data.hasOwnProperty('token')) {
-        //     yield put(setCurrentUser(data));
-        //     yield put({type: dataSagaActions.LOAD_LISTS, payload: {token: data.token}});
-        //     yield put({type: dataSagaActions.LOAD_TASKS, payload: {token: data.token}});
-        //     yield put({type: dataSagaActions.LOAD_COMMENTS, payload: {token: data.token}});
-        // }
     } catch (e) {
         console.log(e);
         yield put({type: "SIGN_UP_FAILED"});

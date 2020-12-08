@@ -111,7 +111,7 @@ export function *watchRemoveList() {
     yield takeEvery(dataSagaActions.REMOVE_LIST, removeListSaga);
 }
 
-//RENAME_LIST
+//UPDATE_LIST
 function fetchRenameList(action: any) {
     const url = "http://trello-purrweb.herokuapp.com/columns/" + action.payload.id;
     return fetch(url, {
@@ -140,7 +140,7 @@ function *renameListSaga(action: any) {
 }
 
 export function *watchRenameList() {
-    yield takeEvery(dataSagaActions.RENAME_LIST, renameListSaga);
+    yield takeEvery(dataSagaActions.UPDATE_LIST, renameListSaga);
 }
 
 //ADD_TASK

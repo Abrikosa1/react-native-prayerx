@@ -18,7 +18,7 @@ const ListsScreen: React.FC = ({ navigation, route }: any) => {
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate("ListTabNavigator", {
-                  list: item })}
+                  id: item.id, title: item.title })}
                 }
               >
                 <Text style={styles.text}>{item.title}</Text>

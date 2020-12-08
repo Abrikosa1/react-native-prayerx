@@ -145,8 +145,7 @@ const TasksScreen = ({ navigation, route }: any) => {
               onRowDidOpen={onRowDidOpen}
               onSwipeValueChange={onSwipeValueChange}
             />}
-          </>
-        }
+          </>}
       />}
     </>
   )

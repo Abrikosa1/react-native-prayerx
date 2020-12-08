@@ -3,7 +3,7 @@ import { RefreshControl, StyleSheet, Text, TextInput, TouchableOpacity, View } f
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { dataSagaActions } from '../store/DataSagas/dataSagaActions';
 import { initStyles } from '../styles';
-import { State } from '../types';
+import { List, State } from '../types';
 
 interface IProps {
   navigation: any;
@@ -11,19 +11,25 @@ interface IProps {
 }
 
 const ColumnSettingsScreen: React.FC<IProps> = ({ navigation, route }) => {
-  const { params } = route;
+  const { id } = route.params;
+
+  const selectListById = (listId: number) => 
+    (state: State) => state.data.lists.filter((list: List) => list.id === listId);
+  const lists = useSelector(selectListById(id), shallowEqual);
+  const list = lists[0];
+
   const dispatch = useDispatch();
   const selectCurrentUser = (state: State) => state.user;
   const user = useSelector(selectCurrentUser, shallowEqual);
-  const [newListTitle, setNewListTitle] = useState(params.title);
+  const [newListTitle, setNewListTitle] = useState(list.title);
   const inputRef: any = useRef(null);
   const handlePressRenameList = () => {
     if(newListTitle) {
       dispatch({
-        type:dataSagaActions.RENAME_LIST, 
+        type:dataSagaActions.UPDATE_LIST, 
         payload: {
           token: user.token, 
-          id: params.id,
+          id: id,
           newList: { 
             title: newListTitle, 
             description: ''
@@ -34,7 +40,7 @@ const ColumnSettingsScreen: React.FC<IProps> = ({ navigation, route }) => {
     }
   }
   const handlePressRemoveList = () => {
-    dispatch({type: dataSagaActions.REMOVE_LIST, payload: {token: user.token, id: params.id}});
+    dispatch({type: dataSagaActions.REMOVE_LIST, payload: {token: user.token, id: id}});
     navigation.navigate('ListsScreen');
   }
   return(

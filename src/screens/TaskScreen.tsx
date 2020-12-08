@@ -55,7 +55,6 @@ const TaskScreen: React.FC<IProps> = ({ navigation, route }) => {
         });
         setNewCommentBody('');
       } else {
-        console.log(newCommentBody);
         dispatch({
           type:dataSagaActions.UPDATE_COMMENT,
           payload: {
@@ -199,12 +198,12 @@ const TaskScreen: React.FC<IProps> = ({ navigation, route }) => {
               value={newCommentBody}
               returnKeyType='send'
             />
-            <AntDesignIcon style={styles.editIcon}
+            {(newCommentBody.length > 0) && <AntDesignIcon style={styles.editIcon}
               name={'checkcircleo'} 
               size={26} 
               color="#BFB393"
               onPress={() => handleSubmit()}
-            />
+            />}
             {editComment && <AntDesignIcon style={styles.editIcon}
               name={'closecircleo'} 
               size={26} 

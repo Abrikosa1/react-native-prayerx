@@ -31,7 +31,7 @@ const ListTabNavigator: React.FC = ({ route, navigation }: any) => {
         options={{
           title: 'My prayers'
         }}
-        initialParams={{ itemId: route.params.list.id }}
+        initialParams={{ itemId: route.params.id }}
       />
       <Tab.Screen 
         name="SubscribedScreen" 
