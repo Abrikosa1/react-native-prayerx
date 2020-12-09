@@ -1,40 +1,15 @@
-import React, { useState, useEffect, useContext } from "react";
-import {
-  createStackNavigator,
-  StackNavigationProp
-} from "@react-navigation/stack";
-import { DefaultTheme, NavigationContainer, RouteProp } from "@react-navigation/native";
-import { ActivityIndicator } from "react-native";
-import AsyncStorage from "@react-native-community/async-storage";
-
-import { State, User } from "./types";
+import React from "react";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { shallowEqual, useSelector } from "react-redux";
-import { ListsStack } from "./navigators/ListsStack";
+import MainStack from "./navigators/MainStack";
 import AuthStack from "./navigators/AuthStack";
+import { selectCurrentUser } from './store/selectors';
 
+interface IProps {}
 
-interface RoutesProps {}
-
-const Routes: React.FC<RoutesProps> = ({}) => {
-  //const { user, login } = useContext(AuthContext);
-  //const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(true);
-
-  const selectCurrentUser = (state: State) => state.user;
+const Routes: React.FC<IProps> = React.memo(({}) => {
+  
   const user = useSelector(selectCurrentUser, shallowEqual);
-  // useEffect(() => {
-    
-  //   if(user) {
-  //     setLoading(false);
-  //   }
-
-  // }, [user]);
-
-  // if (loading) {
-  //   return (
-  //       <ActivityIndicator size="large" />
-  //   );
-  // }
 
   const MyTheme = {
     ...DefaultTheme,
@@ -46,9 +21,9 @@ const Routes: React.FC<RoutesProps> = ({}) => {
 
   return (
     <NavigationContainer theme={MyTheme}>
-      {user.token ? <ListsStack /> : <AuthStack />}
+      {user.token ? <MainStack /> : <AuthStack />}
     </NavigationContainer>
   );
-};
+});
 
 export default Routes;

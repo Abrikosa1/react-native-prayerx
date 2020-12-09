@@ -1,14 +1,18 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { AuthParamList } from "../params/AuthParamList";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 
-interface AuthStackProps {}
+interface IProps {}
 
-const Stack = createStackNavigator<AuthParamList>();
+export type AuthStackParamList = {
+  Login: undefined;
+  Register: undefined;
+};
 
-const AuthStack: React.FC<AuthStackProps> = ({}) => {
+const Stack = createStackNavigator<AuthStackParamList>();
+
+const AuthStack: React.FC<IProps> = ({}) => {
   return (
     <Stack.Navigator
       screenOptions={{

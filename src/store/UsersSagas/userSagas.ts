@@ -1,4 +1,6 @@
+import { PayloadAction } from "@reduxjs/toolkit";
 import {call, put, takeEvery} from "redux-saga/effects";
+import { Comment } from "../../types";
 import { dataSagaActions } from "../DataSagas/dataSagaActions";
 import { setErrors } from "../LoginSlice";
 
@@ -6,7 +8,7 @@ import {setCurrentUser} from "../UsersSlice";
 import {userSagaActions} from "./userSagaActions";
 
 //SIGN_IN
-function fetchSignIn(action : any) {
+function fetchSignIn(action: PayloadAction<{email: string, password: string}>) {
     const url = "http://trello-purrweb.herokuapp.com/auth/sign-in";
     return fetch(url, {
         method: 'POST',
@@ -14,15 +16,15 @@ function fetchSignIn(action : any) {
             'Content-Type': 'application/json;charset=utf-8'
         },
         body: JSON.stringify(action.payload)
-    }).then((response : any) => {
+    }).then((response) => {
         if (!response.ok) {
             throw response
         }
         return response.json()
-    }).catch((error : any) => console.log('Error: ', error));
+    }).catch((error) => console.log('Error: ', error));
 }
 
-export function * signInSaga(action : any) {
+export function * signInSaga(action: PayloadAction<{email: string, password: string}>) {
     try {
         const data = yield call(fetchSignIn, action);
         if (data.hasOwnProperty('token')) {
@@ -47,7 +49,7 @@ export function *watchSignIn() {
 }
 
 //SIGN_UP
-function fetchSignUp(action : any) {
+function fetchSignUp(action: PayloadAction<{email: string, name: string, password: string}>) {
     const url = "http://trello-purrweb.herokuapp.com/auth/sign-up";
     return fetch(url, {
         method: 'POST',
@@ -55,15 +57,15 @@ function fetchSignUp(action : any) {
             'Content-Type': 'application/json;charset=utf-8'
         },
         body: JSON.stringify(action.payload)
-    }).then((response : any) => {
+    }).then((response) => {
         if (!response.ok) {
             throw response
         }
         return response.json()
-    }).catch((error : any) => console.log('Error: ', error));
+    }).catch((error) => console.log('Error: ', error));
 }
 
-export function * signUpSaga(action : any) {
+export function * signUpSaga(action: PayloadAction<{email: string, name: string, password: string}>) {
     try {
         const data = yield call(fetchSignUp, action);
     } catch (e) {

@@ -1,17 +1,24 @@
+import { StackNavigationProp } from "@react-navigation/stack";
 import React, { useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
-
-
 import { useDispatch } from "react-redux";
-import { AuthNavProps } from "../params/AuthParamList";
+import { AuthStackParamList } from "../navigators/AuthStack";
 import { userSagaActions } from "../store/UsersSagas/userSagaActions";
-import { User } from "../types";
 
-const RegisterScreen = React.memo(({ navigation, route }: AuthNavProps<"Register">) => {
+type RegisterScreenNavigationProp = StackNavigationProp<
+  AuthStackParamList,
+  'Register'
+>;
+
+interface IProps {
+  navigation: RegisterScreenNavigationProp,
+}
+
+const RegisterScreen: React.FC<IProps> = React.memo(({ navigation }) => {
   const dispatch = useDispatch();
-  const [showWarn, setShowWarn] = useState(false);
-  const [user, setUser] = useState({
+  const [showWarn, setShowWarn] = useState<boolean>(false);
+  const [user, setUser] = useState<{email: string, name: string, password: string}>({
     email: '',
     name: '',
     password: ''

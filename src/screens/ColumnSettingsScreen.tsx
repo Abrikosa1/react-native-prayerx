@@ -1,28 +1,38 @@
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useRef, useState } from 'react';
-import { RefreshControl, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { MainStackParamList } from '../navigators/MainStack';
 import { dataSagaActions } from '../store/DataSagas/dataSagaActions';
+import { selectCurrentUser, selectListById } from '../store/selectors';
 import { initStyles } from '../styles';
-import { List, State } from '../types';
+
+
+type ColumnSettingsScreenNavigationProp = StackNavigationProp<
+  MainStackParamList,
+  'ColumnSettingsScreen'
+>;
+
+type ColumnSettingsScreenRouteProp = RouteProp<MainStackParamList, 'ColumnSettingsScreen'>;
 
 interface IProps {
-  navigation: any;
-  route: any;
+  navigation: ColumnSettingsScreenNavigationProp;
+  route: ColumnSettingsScreenRouteProp;
 }
 
-const ColumnSettingsScreen: React.FC<IProps> = ({ navigation, route }) => {
+const ColumnSettingsScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
   const { id } = route.params;
+  const dispatch = useDispatch();
 
-  const selectListById = (listId: number) => 
-    (state: State) => state.data.lists.filter((list: List) => list.id === listId);
   const lists = useSelector(selectListById(id), shallowEqual);
   const list = lists[0];
-
-  const dispatch = useDispatch();
-  const selectCurrentUser = (state: State) => state.user;
   const user = useSelector(selectCurrentUser, shallowEqual);
-  const [newListTitle, setNewListTitle] = useState(list.title);
-  const inputRef: any = useRef(null);
+  
+  const [newListTitle, setNewListTitle] = useState<string>(list.title);
+
+  const inputRef = useRef<TextInput>(null);
+
   const handlePressRenameList = () => {
     if(newListTitle) {
       dispatch({
@@ -38,36 +48,38 @@ const ColumnSettingsScreen: React.FC<IProps> = ({ navigation, route }) => {
       });
       navigation.navigate('ListTabNavigator', {title: newListTitle});
     }
-  }
+  };
+
   const handlePressRemoveList = () => {
     dispatch({type: dataSagaActions.REMOVE_LIST, payload: {token: user.token, id: id}});
     navigation.navigate('ListsScreen');
-  }
+  };
+
   return(
     <View style={styles.settingsContainer}>
-        <TextInput
-          ref={inputRef}
-          style={initStyles.input}
-          placeholder='Type a title...'
-          underlineColorAndroid="transparent"
-          onChangeText={title => setNewListTitle(title)}
-          defaultValue={newListTitle}
-        />
-        <TouchableOpacity
-          style={initStyles.button}
-          onPress={handlePressRenameList}
-        >
-          <Text style={initStyles.text}>Submit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[initStyles.button, styles.removeButton]}
-          onPress={handlePressRemoveList}
-        >
-          <Text style={initStyles.text}>Remove Column</Text>
-        </TouchableOpacity>
+      <TextInput
+        ref={inputRef}
+        style={initStyles.input}
+        placeholder='Type a title...'
+        underlineColorAndroid="transparent"
+        onChangeText={title => setNewListTitle(title)}
+        defaultValue={newListTitle}
+      />
+      <TouchableOpacity
+        style={initStyles.button}
+        onPress={handlePressRenameList}
+      >
+        <Text style={initStyles.text}>Submit</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[initStyles.button, styles.removeButton]}
+        onPress={handlePressRemoveList}
+      >
+        <Text style={initStyles.text}>Remove Column</Text>
+      </TouchableOpacity>
     </View>
   )
-};  
+});  
 
 const styles = StyleSheet.create({
   settingsContainer: {

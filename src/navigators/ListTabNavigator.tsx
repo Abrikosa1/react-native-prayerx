@@ -1,12 +1,34 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import Icon from 'react-native-vector-icons/Feather';
 import SubscribedScreen from '../screens/SubscribedScreen';
 import TasksScreen from '../screens/TasksScreen';
+import { MainStackParamList } from './MainStack';
 
-const Tab = createMaterialTopTabNavigator();
+export type ListTabParamList = {
+  TasksScreen: { itemId: number };
+  SubscribedScreen: undefined;
+  TaskSettingsScreen: { itemId: number };
+};
 
-const ListTabNavigator: React.FC = ({ route, navigation }: any) => {
+const Tab = createMaterialTopTabNavigator<ListTabParamList>();
+
+
+type ListTabRouteProp = RouteProp<MainStackParamList, 'ListTabNavigator'>;
+
+type ListTabNavigatorNavigationProp = StackNavigationProp<
+  MainStackParamList,
+  'ListTabNavigator'
+>;
+
+
+interface IProps {
+  route: ListTabRouteProp,
+  navigation: ListTabNavigatorNavigationProp,
+}
+
+const ListTabNavigator: React.FC<IProps> = ({ route, navigation }) => {
   return (
     <Tab.Navigator 
       swipeEnabled={false}

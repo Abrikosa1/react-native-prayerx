@@ -1,5 +1,5 @@
-import React, { Dispatch, SetStateAction } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { initStyles } from '../styles';
 import { Comment, User } from '../types';
 

@@ -1,21 +1,27 @@
 import React from 'react';
-import { View, Text, Alert, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { SubscribedTask } from '../types';
-import TaskCard from '../components/TaskCard';
-import { v4 as uuidv4 } from 'uuid';
+import { View, Text, StyleSheet } from 'react-native';
+import { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tabs';
+import { CompositeNavigationProp, RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { ListTabParamList } from '../navigators/ListTabNavigator';
+import { MainStackParamList } from '../navigators/MainStack';
+
+type SubscribedScreenNavigationProp = CompositeNavigationProp<
+  MaterialTopTabNavigationProp<ListTabParamList, 'TasksScreen'>,
+  StackNavigationProp<MainStackParamList>
+>;
+type SubscribedScreenRouteProp = RouteProp<ListTabParamList, 'TasksScreen'>;
+
+interface IProps {
+  route: SubscribedScreenRouteProp;
+  navigation: SubscribedScreenNavigationProp;
+}
 
 
-const subscribedTasks = [
-  { id: 24234, title: 'Subscribed Task #1', complete: false }, 
-  { id: 23423, title: 'Subscribed Task #2', complete: true }, 
-  { id: 234231234, title: 'Subscribed Task #3', complete: true },
-  { id: 231234234, title: 'Subscribed Task #4', complete: true },
-]
-
-const SubscribedScreen = () => {
+const SubscribedScreen: React.FC<IProps> = () => {
   return (
-    <View>
-      <Text>SubscribedScreen</Text>
+    <View style={styles.container}>
+      <Text style={styles.text}>Subscribed Screen</Text>
        {/* <FlatList 
         showsVerticalScrollIndicator={false}
         style={styles.tasks} 
@@ -33,6 +39,12 @@ const SubscribedScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    margin: 15,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   tasks: {
     marginRight: 15,
     marginLeft: 15
@@ -50,7 +62,7 @@ const styles = StyleSheet.create({
   },
   text: {
     textTransform: 'uppercase',
-    color: '#FFFFFF',
+    color: '#000',
     fontFamily: 'SFUIText-Regular',
   },
 });

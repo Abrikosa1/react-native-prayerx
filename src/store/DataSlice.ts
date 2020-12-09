@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { Data } from '../types';
+import { Comment, Data, List, Task } from '../types';
 
 
 const state: Data = {
@@ -13,24 +13,18 @@ const DataSlice = createSlice({
   name: 'data',
   initialState: state,
   reducers: {
-    loadData(state, action) {
-      state.lists = [];
-    },
-    putLists(state, action) {
+    putLists(state, action: PayloadAction<Array<List>>) {
       state.lists = action.payload;
     },
-    putTasks(state, action) {
+    putTasks(state, action: PayloadAction<Array<Task>>) {
       state.tasks = action.payload;
     },
-    putComments(state, action) {
+    putComments(state, action: PayloadAction<Array<Comment>>) {
       state.comments = action.payload;
     },
-    deleteList(state, action) {
-      state.lists
-    }
   }
 });
 
-export const { loadData, putLists, putTasks, putComments} = DataSlice.actions;
+export const { putLists, putTasks, putComments} = DataSlice.actions;
 
 export default DataSlice.reducer;

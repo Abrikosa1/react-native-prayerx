@@ -1,6 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { LoginData } from '../types';
 
-const initialState = {
+const initialState: LoginData = {
   ///authToken: '',
   //isFetching: false,
   error: false,
@@ -11,7 +12,7 @@ const LoginSlice = createSlice({
   name: 'loginData',
   initialState: initialState,
   reducers: {
-    setErrors(state, action) { 
+    setErrors(state, action: PayloadAction<{error: boolean, errorMessage: string}>) { 
       state.error = action.payload.error;
       state.errorMessage = action.payload.errorMessage;
     }

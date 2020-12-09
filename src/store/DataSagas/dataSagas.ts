@@ -1,14 +1,16 @@
+import { PayloadAction } from "@reduxjs/toolkit";
 import { call, put, takeEvery } from "redux-saga/effects";
+import { Comment, List, Task } from "../../types";
 import { putLists, putTasks, putComments } from "../DataSlice";
 import { dataSagaActions } from "./dataSagaActions";
 
-const fetchDataUrl:any = {
+const fetchDataUrl: any = {
     LOAD_LISTS: 'http://trello-purrweb.herokuapp.com/columns',
     LOAD_TASKS: 'http://trello-purrweb.herokuapp.com/cards',
     LOAD_COMMENTS: 'http://trello-purrweb.herokuapp.com/comments',
 }
-//LOAD_LISTS
-function fetchData(action: any) {
+//LOAD_DATA
+function fetchData(action: PayloadAction<{token: string}>) {
     return fetch(fetchDataUrl[action.type], {
         method: 'GET',
         headers: {
@@ -16,14 +18,14 @@ function fetchData(action: any) {
             'Content-Type': 'application/json;charset=utf-8'
         }
     })
-    .then((response : any) => {
+    .then((response) => {
       if (!response.ok) { throw response }
       return response.json()
     })
-    .catch((error : any) => console.log('Error: ', error));
+    .catch((error) => console.log('Error: ', error));
 }
 
-function *fetchDataSaga(action: any) {
+function *fetchDataSaga(action: PayloadAction<{token: string}>) {
     try {
         const data = yield call(fetchData, action);
         
@@ -34,6 +36,7 @@ function *fetchDataSaga(action: any) {
         else if(action.type === 'LOAD_COMMENTS')
             yield put(putComments(data));
     } catch (e) {
+        console.log(e)
         yield put({type: "TODO_FETCH_FAILED"});
     }
 }
@@ -51,7 +54,7 @@ export function *watchLoadComments() {
 }
 
 /*ADD_LIST */
-function fetchAddList(action: any) {
+function fetchAddList(action: PayloadAction<{token: string, newList: List}>) {
     const url = "http://trello-purrweb.herokuapp.com/columns";
     return fetch(url, {
         method: 'POST',
@@ -61,18 +64,19 @@ function fetchAddList(action: any) {
         },
         body: JSON.stringify(action.payload.newList)
     })
-    .then((response : any) => {
+    .then((response) => {
       if (!response.ok) { throw response }
       return response.json()
     })
-    .catch((error : any) => console.log('Error: ', error));
+    .catch((error) => console.log('Error: ', error));
 }
 
-function *addListSaga(action: any) {
+function *addListSaga(action: PayloadAction<{token: string, newList: List}>) {
     try {
         const data = yield call(fetchAddList, action);
         yield put({type:dataSagaActions.LOAD_LISTS, payload: {token: action.payload.token}});
     } catch (e) {
+        console.log(e);
         yield put({type: "ADD_LIST_FAILED"});
     }
 }
@@ -82,7 +86,7 @@ export function *watchAddList() {
 }
 
 //REMOVE_LIST
-function fetchRemoveList(action: any) {
+function fetchRemoveList(action: PayloadAction<{id: number, token: string }>) {
     const url = "http://trello-purrweb.herokuapp.com/columns/" + action.payload.id;
     return fetch(url, {
         method: 'DELETE',
@@ -91,18 +95,19 @@ function fetchRemoveList(action: any) {
             'Content-Type': 'application/json;charset=utf-8'
         }
     })
-    .then((response : any) => {
+    .then((response) => {
       if (!response.ok) { throw response }
       return response.json()
     })
-    .catch((error : any) => console.log('Error: ', error));
+    .catch((error) => console.log('Error: ', error));
 }
 
-function *removeListSaga(action: any) {
+function *removeListSaga(action: PayloadAction<{id: number, token: string }>) {
     try {
         const data = yield call(fetchRemoveList, action);
         yield put({type:dataSagaActions.LOAD_LISTS, payload: {token: action.payload.token}});
     } catch (e) {
+        console.log(e);
         yield put({type: "REMOVE_LIST_FAILED"});
     }
 }
@@ -112,7 +117,7 @@ export function *watchRemoveList() {
 }
 
 //UPDATE_LIST
-function fetchRenameList(action: any) {
+function fetchRenameList(action: PayloadAction<{id: number, token: string, newList: List }>) {
     const url = "http://trello-purrweb.herokuapp.com/columns/" + action.payload.id;
     return fetch(url, {
         method: 'PUT',
@@ -122,19 +127,20 @@ function fetchRenameList(action: any) {
         },
         body: JSON.stringify(action.payload.newList)
     })
-    .then((response : any) => {
+    .then((response) => {
       if (!response.ok) { throw response }
       return response.json()
     })
-    .catch((error : any) => console.log('Error: ', error));
+    .catch((error) => console.log('Error: ', error));
 }
 
-function *renameListSaga(action: any) {
+function *renameListSaga(action: PayloadAction<{id: number, token: string, newList: List }>) {
 
     try {
         const data = yield call(fetchRenameList, action);
         yield put({type:dataSagaActions.LOAD_LISTS, payload: {token: action.payload.token}});
     } catch (e) {
+        console.log(e);
         yield put({type: "RENAME_LIST_FAILED"});
     }
 }
@@ -144,8 +150,8 @@ export function *watchRenameList() {
 }
 
 //ADD_TASK
-function fetchAddTask(action: any) {
-    const url = `http://trello-purrweb.herokuapp.com/columns/${action.payload.newTask.column}/cards`;
+function fetchAddTask(action: PayloadAction<{ token: string, newTask: Task }>) {
+    const url = `http://trello-purrweb.herokuapp.com/columns/${action.payload.newTask.columnId}/cards`;
     return fetch(url, {
         method: 'POST',
         headers: {
@@ -154,18 +160,19 @@ function fetchAddTask(action: any) {
         },
         body: JSON.stringify(action.payload.newTask)
     })
-    .then((response : any) => {
+    .then((response) => {
       if (!response.ok) { throw response }
       return response.json()
     })
-    .catch((error : any) => console.log('Error: ', error));
+    .catch((error) => console.log('Error: ', error));
 }
 
-function *addTaskSaga(action: any) {
+function *addTaskSaga(action: PayloadAction<{ token: string, newTask: Task }>) {
     try {
         const data = yield call(fetchAddTask, action);
         yield put({type:dataSagaActions.LOAD_TASKS, payload: {token: action.payload.token}});
     } catch (e) {
+        console.log(e);
         yield put({type: "ADD_TASK_FAILED"});
     }
 }
@@ -175,7 +182,7 @@ export function *watchAddTask() {
 }
 
 //REMOVE_TASK
-function fetchRemoveTask(action: any) {
+function fetchRemoveTask(action: PayloadAction<{ id: number, token: string }>) {
     const url = "http://trello-purrweb.herokuapp.com/cards/" + action.payload.id;
     return fetch(url, {
         method: 'DELETE',
@@ -184,18 +191,19 @@ function fetchRemoveTask(action: any) {
             'Content-Type': 'application/json;charset=utf-8'
         }
     })
-    .then((response : any) => {
+    .then((response) => {
       if (!response.ok) { throw response }
       return response.json()
     })
-    .catch((error : any) => console.log('Error: ', error));
+    .catch((error) => console.log('Error: ', error));
 }
 
-function *removeTaskSaga(action: any) {
+function *removeTaskSaga(action: PayloadAction<{ id: number, token: string }>) {
     try {
         const data = yield call(fetchRemoveTask, action);
         yield put({type:dataSagaActions.LOAD_TASKS, payload: {token: action.payload.token}});
     } catch (e) {
+        console.log(e);
         yield put({type: "REMOVE_TASK_FAILED"});
     }
 }
@@ -206,7 +214,7 @@ export function *watchRemoveTask() {
 
 
 //ADD_COMMENT
-function fetchAddComment(action: any) {
+function fetchAddComment(action: PayloadAction<{ cardId: number, token: string, newComment: Comment }>) {
     const url = `http://trello-purrweb.herokuapp.com/cards/${action.payload.cardId}/comments`;
     return fetch(url, {
         method: 'POST',
@@ -216,18 +224,19 @@ function fetchAddComment(action: any) {
         },
         body: JSON.stringify(action.payload.newComment)
     })
-    .then((response : any) => {
+    .then((response) => {
       if (!response.ok) { throw response }
       return response.json()
     })
-    .catch((error : any) => console.log('Error: ', error));
+    .catch((error) => console.log('Error: ', error));
 }
 
-function *addCommentSaga(action: any) {
+function *addCommentSaga(action: PayloadAction<{ cardId: number, token: string, newComment: Comment }>) {
     try {
         const data = yield call(fetchAddComment, action);
         yield put({type:dataSagaActions.LOAD_COMMENTS, payload: {token: action.payload.token}});
     } catch (e) {
+        console.log(e);
         yield put({type: "ADD_COMMENT_FAILED"});
     }
 }
@@ -238,7 +247,7 @@ export function *watchAddComment() {
 
 
 //REMOVE_TASK
-function fetchRemoveComment(action: any) {
+function fetchRemoveComment(action: PayloadAction<{ id: number, token: string }>) {
     const url = "http://trello-purrweb.herokuapp.com/comments/" + action.payload.id;
     return fetch(url, {
         method: 'DELETE',
@@ -247,18 +256,19 @@ function fetchRemoveComment(action: any) {
             'Content-Type': 'application/json;charset=utf-8'
         }
     })
-    .then((response : any) => {
+    .then((response) => {
       if (!response.ok) { throw response }
       return response.json()
     })
-    .catch((error : any) => console.log('Error: ', error));
+    .catch((error) => console.log('Error: ', error));
 }
 
-function *removeCommentSaga(action: any) {
+function *removeCommentSaga(action: PayloadAction<{ id: number, token: string }>) {
     try {
         const data = yield call(fetchRemoveComment, action);
         yield put({type:dataSagaActions.LOAD_COMMENTS, payload: {token: action.payload.token}});
     } catch (e) {
+        console.log(e);
         yield put({type: "REMOVE_COMMENT_FAILED"});
     }
 }
@@ -269,7 +279,7 @@ export function *watchRemoveComment() {
 
 
 //UPDATE_TASK
-function fetchUpdateTask(action: any) {
+function fetchUpdateTask(action: PayloadAction<{ taskId: number, token: string, newTask: Task }>) {
     const url = "http://trello-purrweb.herokuapp.com/cards/" + action.payload.taskId;
     return fetch(url, {
         method: 'PUT',
@@ -279,19 +289,19 @@ function fetchUpdateTask(action: any) {
         },
         body: JSON.stringify(action.payload.newTask)
     })
-    .then((response : any) => {
+    .then((response) => {
       if (!response.ok) { throw response }
       return response.json()
     })
-    .catch((error : any) => console.log('Error: ', error));
+    .catch((error) => console.log('Error: ', error));
 }
 
-function *updateTaskSaga(action: any) {
-
+function *updateTaskSaga(action: PayloadAction<{ taskId: number, token: string, newTask: Task }>) {
     try {
         const data = yield call(fetchUpdateTask, action);
         yield put({type:dataSagaActions.LOAD_TASKS, payload: {token: action.payload.token}});
     } catch (e) {
+        console.log(e);
         yield put({type: "UPDATE_TASK_FAILED"});
     }
 }
@@ -302,7 +312,7 @@ export function *watchUpdateTask() {
 
 
 //UPDATE_COMMENT
-function fetchUpdateComment(action: any) {
+function fetchUpdateComment(action: PayloadAction<{ commentId: number, token: string, newComment: Comment }>) {
     const url = "http://trello-purrweb.herokuapp.com/comments/" + action.payload.commentId;
     return fetch(url, {
         method: 'PUT',
@@ -312,20 +322,20 @@ function fetchUpdateComment(action: any) {
         },
         body: JSON.stringify(action.payload.newComment)
     })
-    .then((response : any) => {
+    .then((response) => {
       if (!response.ok) { throw response }
       return response.json()
     })
-    .catch((error : any) => console.log('Error: ', error));
+    .catch((error) => console.log('Error: ', error));
 }
 
-function *updateCommentSaga(action: any) {
-    console.log('fsdfsdf')
+function *updateCommentSaga(action: PayloadAction<{ commentId: number, token: string, newComment: Comment }>) {
     try {
         const data = yield call(fetchUpdateComment, action);
         console.log(data)
         yield put({type:dataSagaActions.LOAD_COMMENTS, payload: {token: action.payload.token}});
     } catch (e) {
+        console.log(e);
         yield put({type: "UPDATE_COMMENT_FAILED"});
     }
 }

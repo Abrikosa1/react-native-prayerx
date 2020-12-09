@@ -1,44 +1,50 @@
-import React, { SetStateAction, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import CommentComponent from '../components/CommentComponent';
-import { Comment, State, Task } from '../types';
+import { Comment } from '../types';
 import Icon from 'react-native-vector-icons/Feather';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import { dataSagaActions } from '../store/DataSagas/dataSagaActions';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import { RowMap, SwipeListView } from 'react-native-swipe-list-view';
+import { selectCommentsByTaskId, selectCurrentUser, selectTaskById } from '../store/selectors';
+import { MainStackParamList } from '../navigators/MainStack';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp } from '@react-navigation/native';
+
+
+type TaskScreenNavigationProp = StackNavigationProp<
+  MainStackParamList,
+  'TaskScreen'
+>;
+
+type TaskScreenRouteProp = RouteProp<MainStackParamList, 'TaskScreen'>;
 
 interface IProps {
-  navigation: any;
-  route: any;
+  navigation: TaskScreenNavigationProp;
+  route: TaskScreenRouteProp;
 }
 
-const TaskScreen: React.FC<IProps> = ({ navigation, route }) => {
+const TaskScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
   const { taskId } = route.params;
-  const selectCommentsByTaskId = (taskId: number) => 
-    (state: State) => state.data.comments.filter((comment: Comment) => comment.cardId === taskId);
-  const comments:Array<Comment> = useSelector(selectCommentsByTaskId(taskId), shallowEqual);
+  const dispatch = useDispatch();
+  const inputRef = useRef<TextInput>(null);
 
-  const selectTaskById = (taskId: number) => 
-    (state: State) => state.data.tasks.filter((task: Task) => task.id === taskId);
+  const comments:Array<Comment> = useSelector(selectCommentsByTaskId(taskId), shallowEqual);
+  const user = useSelector(selectCurrentUser, shallowEqual);
   const tasks = useSelector(selectTaskById(taskId), shallowEqual);
   const task = tasks[0];
 
-  const dispatch = useDispatch();
-  const [newCommentBody, setNewCommentBody] = useState('');
+  
+  const [newCommentBody, setNewCommentBody] = useState<string>('');
+  const [editComment, setEditComment] = useState<boolean>(false);
+  const [editCommentId, setEditCommentId] = useState<number | null>(null);
 
-
-  const [editComment, setEditComment] = useState<SetStateAction<boolean>>(false);
-  const [editCommentId, setEditCommentId] = useState<SetStateAction<number | undefined>>(undefined);
-  //later move to selector
-  const selectCurrentUsername = (state: State) => state.user;
-  const user = useSelector(selectCurrentUsername, shallowEqual);
-
+ 
   const handleChange = (newCommentText: string) => {
     setNewCommentBody(newCommentText)
   }
-
-  const inputRef = useRef<TextInput>(null);
+ 
   const handleSubmit = () => {
     if(newCommentBody) {
       if(!editComment) {
@@ -75,7 +81,7 @@ const TaskScreen: React.FC<IProps> = ({ navigation, route }) => {
     }
   }
   
-  const handleEditComment = (rowMap: any, rowKey: any, comment: Comment) => {
+  const handleEditComment = (rowMap: RowMap<Comment>, rowKey: number, comment: Comment) => {
     setEditComment(true);
     setNewCommentBody(comment.body);
     setEditCommentId(comment.id);
@@ -83,18 +89,18 @@ const TaskScreen: React.FC<IProps> = ({ navigation, route }) => {
     inputRef.current?.focus();
   }
   
-  const closeRow = (rowMap: any, rowKey: any) => {
+  const closeRow = (rowMap: RowMap<Comment>, rowKey: number) => {
     if (rowMap[rowKey]) {
         rowMap[rowKey].closeRow();
     }
   };
 
-  const deleteRow = (rowMap: any, rowKey:any, commentId: number) => {
+  const deleteRow = (rowMap: RowMap<Comment>, rowKey: number, commentId: number) => {
       closeRow(rowMap, rowKey);
       dispatch({type: dataSagaActions.REMOVE_COMMENT, payload: {token: user.token, id: commentId}});
   };
 
-  const onRowDidOpen = (rowKey:any) => {
+  const onRowDidOpen = (rowKey: string) => {
   };
 
   const onSwipeValueChange = (swipeData: any) => {
@@ -162,7 +168,7 @@ const TaskScreen: React.FC<IProps> = ({ navigation, route }) => {
             user={user}
           />
         )}
-        renderHiddenItem={(data:any, rowMap: any) => (
+        renderHiddenItem={(data, rowMap: RowMap<Comment>) => (
           <View style={styles.rowBack}>
             <TouchableOpacity
               style={[styles.backRightBtnRight, styles.editBtn]}
@@ -172,7 +178,7 @@ const TaskScreen: React.FC<IProps> = ({ navigation, route }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.backRightBtnRight}
-              onPress={() => deleteRow(rowMap, data.item.key, data.item.id)}
+              onPress={() => deleteRow(rowMap, data.item.id, data.item.id)}
             >
               <Text style={styles.backRightBtnRightText}>Delete</Text>
             </TouchableOpacity>
@@ -189,7 +195,7 @@ const TaskScreen: React.FC<IProps> = ({ navigation, route }) => {
               name={'message-square'} size={20} color="#BFB393"
             />
             <TextInput
-              ref={inputRef}
+              //ref={inputRef}
               style={styles.input}
               placeholder="Add a comment..."
               underlineColorAndroid="transparent"
@@ -200,13 +206,13 @@ const TaskScreen: React.FC<IProps> = ({ navigation, route }) => {
             />
             {(newCommentBody.length > 0) && <AntDesignIcon style={styles.editIcon}
               name={'checkcircleo'} 
-              size={26} 
+              size={30} 
               color="#BFB393"
               onPress={() => handleSubmit()}
             />}
             {editComment && <AntDesignIcon style={styles.editIcon}
               name={'closecircleo'} 
-              size={26} 
+              size={30} 
               color="#AC5253"
               onPress={() => {
                 setNewCommentBody('');
@@ -218,7 +224,7 @@ const TaskScreen: React.FC<IProps> = ({ navigation, route }) => {
       />  
     </View>
   )
-};
+});
 
 const styles = StyleSheet.create({
   taskContainer: {
@@ -344,7 +350,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     lineHeight: 19.92,
     paddingRight: 15,
-    color: '#9C9C9C',
+    color: '#000',
     fontFamily: 'SFUIText-Regular',
   },
   icon: {

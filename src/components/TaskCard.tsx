@@ -1,14 +1,13 @@
 import React, { useState} from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
-import { Comment, State, SubscribedTask, Task } from '../types';
+import { Task } from '../types';
 import Icon from 'react-native-vector-icons/Feather';
 import PrayIcon from 'react-native-vector-icons/FontAwesome5';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { dataSagaActions } from '../store/DataSagas/dataSagaActions';
+import { selectCommentsByTaskId, selectCurrentUser } from '../store/selectors';
 
 
 interface IProps {
@@ -17,10 +16,13 @@ interface IProps {
 
 const TaskCard: React.FC<IProps> = React.memo(({ task }) => {
   const navigation = useNavigation();
-  const [toggleCheckBox, setToggleCheckBox] = useState(task.checked);
-  const selectCurrentUser = (state: State) => state.user;
-  const user = useSelector(selectCurrentUser, shallowEqual);
   const dispatch = useDispatch();
+
+  const [toggleCheckBox, setToggleCheckBox] = useState<boolean>(task.checked);
+
+  const user = useSelector(selectCurrentUser, shallowEqual);
+  const comments = useSelector(selectCommentsByTaskId(task.id), shallowEqual);
+  
   const handleValueChange = (newValue: boolean) => {
     setToggleCheckBox(newValue);
     dispatch({
@@ -37,10 +39,7 @@ const TaskCard: React.FC<IProps> = React.memo(({ task }) => {
       }
     });
   } 
-    //later move to selector
-  const selectCommentsByTaskId = (taskId: number) => 
-    (state: State) => state.data.comments.filter((comment: Comment) => comment.cardId === taskId);
-  const comments:Array<Comment> = useSelector(selectCommentsByTaskId(task.id), shallowEqual);
+  
   return (
     <View style={styles.taskWrapper}>
       <View style={styles.rect}></View>

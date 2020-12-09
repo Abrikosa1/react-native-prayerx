@@ -1,30 +1,39 @@
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useRef, useState } from 'react';
-import { RefreshControl, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { ListTabParamList } from '../navigators/ListTabNavigator';
+import { MainStackParamList } from '../navigators/MainStack';
 import { dataSagaActions } from '../store/DataSagas/dataSagaActions';
+import { selectCurrentUser, selectTaskById } from '../store/selectors';
 import { initStyles } from '../styles';
-import { State, Task } from '../types';
+
+type TaskSettingsScreenNavigationProp = StackNavigationProp<
+  ListTabParamList,
+  'TaskSettingsScreen'
+>;
+
+type TaskSettingsScreenRouteProp = RouteProp<MainStackParamList, 'TaskSettingsScreen'>;
 
 interface IProps {
-  navigation: any;
-  route: any;
+  navigation: TaskSettingsScreenNavigationProp;
+  route: TaskSettingsScreenRouteProp;
 }
 
-const TaskSettingsScreen: React.FC<IProps> = ({ navigation, route }) => {
+const TaskSettingsScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
   const { taskId } = route.params;
-  
-  const selectTaskById = (taskId: number) => 
-    (state: State) => state.data.tasks.filter((task: Task) => task.id === taskId);
+  const dispatch = useDispatch();
+  const inputRef = useRef<TextInput>(null);
+
   const tasks = useSelector(selectTaskById(taskId), shallowEqual);
   const task = tasks[0];
-  
-  const dispatch = useDispatch();
-  const selectCurrentUser = (state: State) => state.user;
   const user = useSelector(selectCurrentUser, shallowEqual);
-  const [newTaskTitle, setNewTaskTitle] = useState(task.title);
-  const [newTaskDescription, setNewTaskDescription] = useState(task.description);
-  const [maxLength, setMaxLength] = useState(70);
-  const inputRef: any = useRef(null);
+
+  const [newTaskTitle, setNewTaskTitle] = useState<string>(task.title);
+  const [newTaskDescription, setNewTaskDescription] = useState<string>(task.description);
+  const [maxLength, setMaxLength] = useState<number>(70 - task.description.length);
+
 
   const handleChangeDescription = (inputText: string) => {
     setMaxLength(70 - inputText.length);
@@ -48,11 +57,13 @@ const TaskSettingsScreen: React.FC<IProps> = ({ navigation, route }) => {
       });
       navigation.pop();
     }
-  }
+  };
+
   const handlePressRemoveTask = () => {
     dispatch({type: dataSagaActions.REMOVE_TASK, payload: {token: user.token, id: taskId}});
     navigation.navigate('TasksScreen', {itemId: task.columnId});
-  }
+  };
+
   return(
     <View style={styles.settingsContainer}>
       <TextInput
@@ -90,7 +101,7 @@ const TaskSettingsScreen: React.FC<IProps> = ({ navigation, route }) => {
       </TouchableOpacity>
     </View>
   )
-};  
+});  
 
 const styles = StyleSheet.create({
   settingsContainer: {

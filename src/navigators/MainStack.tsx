@@ -11,14 +11,21 @@ import Icon from "react-native-vector-icons/Feather";
 import ListTabNavigator from "./ListTabNavigator";
 import TaskSettingsScreen from "../screens/TaskSettingsScreen";
 
+interface IProps {}
+
+export type MainStackParamList = {
+  TaskScreen: {taskId: number};
+  ListTabNavigator: { title?: string, id?: number };
+  ColumnSettingsScreen: { id: number }; 
+  ListsScreen: undefined;
+  TaskSettingsScreen: {taskId: number};
+};
 
 
-interface HomeStackProps {}
+const Stack = createStackNavigator<MainStackParamList>();
 
-const Stack = createStackNavigator();
-
-export const ListsStack: React.FC<HomeStackProps> = ({}) => {
-  const [showModal, setShowModal] = useState(false);
+const MainStack: React.FC<IProps> = ({}) => {
+  const [showModal, setShowModal] = useState<boolean>(false);
   return (
     <>
       <Stack.Navigator initialRouteName="ListsScreen" >
@@ -35,7 +42,7 @@ export const ListsStack: React.FC<HomeStackProps> = ({}) => {
           }} 
         />
         <Stack.Screen
-          options={({ navigation, route }: any) => ({
+          options={({ navigation, route }) => ({
             headerTitle: route.params.title,
             headerTitleAlign: 'center',
             headerStyle: styles.listScreenHeader,
@@ -60,9 +67,9 @@ export const ListsStack: React.FC<HomeStackProps> = ({}) => {
         <Stack.Screen 
         name="ColumnSettingsScreen" 
         component={ColumnSettingsScreen}
-        options={({ navigation, route }: any) => ({
-            headerTitle: 'Settings',
-            headerTitleAlign: 'center'
+        options={({ navigation, route }) => ({
+          headerTitle: 'Settings',
+          headerTitleAlign: 'center'
         })}
         />
         <Stack.Screen
@@ -86,7 +93,7 @@ export const ListsStack: React.FC<HomeStackProps> = ({}) => {
         <Stack.Screen 
           name='TaskSettingsScreen' 
           component={TaskSettingsScreen}
-          options={({ navigation, route }: any) => ({
+          options={({ navigation, route }) => ({
             headerTitle: 'Settings',
             headerTitleAlign: 'center',
           })} 
@@ -173,3 +180,6 @@ const styles = StyleSheet.create({
     marginRight: 15
   }
 });
+
+
+export default MainStack;

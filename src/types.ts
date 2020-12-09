@@ -32,7 +32,7 @@ export type Data = {
 }
 
 export type User = {
-  id: number;
+  id: number | null;
   email: string;
   name: string;
   token: string;

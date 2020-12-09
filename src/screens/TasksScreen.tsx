@@ -2,53 +2,66 @@ import React, { useRef, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { View, Text, TextInput } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { State, Task,  User } from '../types';
+import { Comment, Task, User } from '../types';
 import Icon from 'react-native-vector-icons/AntDesign';
 import TaskCard from '../components/TaskCard';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import { RowMap, SwipeListView } from 'react-native-swipe-list-view';
 import { dataSagaActions } from '../store/DataSagas/dataSagaActions';
+import { selectCurrentUser, selectTasksByListId } from '../store/selectors';
+import { CompositeNavigationProp, RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { MainStackParamList } from '../navigators/MainStack';
+import { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tabs';
+import { ListTabParamList } from '../navigators/ListTabNavigator';
 
 
-const TasksScreen = ({ navigation, route }: any) => {
-  //later move to selectors
-  const selectCurrentUser = (state: State) => state.user;
+type TasksScreenNavigationProp = CompositeNavigationProp<
+  MaterialTopTabNavigationProp<ListTabParamList, 'TasksScreen'>,
+  StackNavigationProp<MainStackParamList>
+>;
+type TasksScreenRouteProp = RouteProp<ListTabParamList, 'TasksScreen'>;
+
+interface IProps {
+  route: TasksScreenRouteProp;
+  navigation: TasksScreenNavigationProp;
+}
+
+const TasksScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
+  const { itemId } = route.params;
+  const dispatch = useDispatch();
+  const inputRef = useRef<TextInput>(null);
+
   const user: User = useSelector(selectCurrentUser, shallowEqual);
 
-
-  const selectTasksByListId = (listId: number) => 
-  (state: State) => state.data.tasks.filter((task: Task) => task.columnId === listId);
-  const tasks = useSelector(selectTasksByListId(route.params.itemId), shallowEqual);
-  const unCheckedTasks =  tasks.filter(task => !task.checked);
+  const tasks = useSelector(selectTasksByListId(itemId), shallowEqual);
+  const unCheckedTasks = tasks.filter(task => !task.checked);
   const checkedTasks = tasks.filter(task => task.checked);
 
-  const dispatch = useDispatch();
+  const [showChecked, setShowChecked] = useState<boolean>(false);
+  const [newTaskTitle, setNewTaskTitle] = useState<string>('');
 
-  const closeRow = (rowMap: any, rowKey: any) => {
+  const closeRow = (rowMap: RowMap<Task>, rowKey: number) => {
     if (rowMap[rowKey]) {
         rowMap[rowKey].closeRow();
     }
   };
 
-  const deleteRow = (rowMap: any, rowKey:any, taskId: string) => {
+  const deleteRow = (rowMap: RowMap<Task>, rowKey: number, taskId: number) => {
       closeRow(rowMap, rowKey);
       dispatch({type: dataSagaActions.REMOVE_TASK, payload: {token: user.token, id: taskId}});
   };
 
-  const onRowDidOpen = (rowKey:any) => {
+  const onRowDidOpen = (rowKey:number) => {
   };
 
   const onSwipeValueChange = (swipeData: any) => {
   };
 
-  //show checked 
-  const [showChecked, setShowChecked] = useState(false);
-  //add task
-  const [newTaskTitle, setNewTaskTitle] = useState('');
   
   const handleChange = (newTaskTitle: string) => {
     setNewTaskTitle(newTaskTitle)
   }
-  const inputRef: any = useRef(null);
+
   const handleSubmit = () => {
     if(newTaskTitle) {
       //dispatch(addTask({listId: route.params.itemId, title: newTaskTitle, username: currentUser.name}));
@@ -59,14 +72,14 @@ const TasksScreen = ({ navigation, route }: any) => {
             title: newTaskTitle,
             description: '', 
             checked: false, 
-            column: route.params.itemId
+            columnId: route.params.itemId
           }
         }
       });
       setNewTaskTitle('');
     }
     else {
-      inputRef.current.focus();
+      inputRef.current?.focus();
     }
   }
   
@@ -95,11 +108,11 @@ const TasksScreen = ({ navigation, route }: any) => {
         renderItem={ ({ item, index, separators }) => 
           <TaskCard key={item.id} task={item}/>
         }
-        renderHiddenItem={(data:any, rowMap: any) => (
+        renderHiddenItem={(data, rowMap: RowMap<Task>) => (
           <View style={styles.rowBack}>
             <TouchableOpacity
               style={styles.backRightBtnRight}
-              onPress={() => deleteRow(rowMap, data.item.key, data.item.id)}
+              onPress={() => deleteRow(rowMap, data.item.id, data.item.id)}
             >
               <Text style={styles.backRightBtnRightText}>Delete</Text>
             </TouchableOpacity>
@@ -108,8 +121,8 @@ const TasksScreen = ({ navigation, route }: any) => {
         previewRowKey={'0'}
         previewOpenValue={-40}
         previewOpenDelay={3000}
-        onRowDidOpen={onRowDidOpen}
-        onSwipeValueChange={onSwipeValueChange}
+        //onRowDidOpen={onRowDidOpen}
+        //onSwipeValueChange={onSwipeValueChange}
         ListFooterComponent={
           <>
             {unCheckedTasks.length === 0 && <Text style={styles.messageText}>No unanswered prayers, press button to see answered...</Text>}
@@ -129,7 +142,7 @@ const TasksScreen = ({ navigation, route }: any) => {
               renderItem={ ({ item, index, separators }) => 
                 <TaskCard key={item.id} task={item}/>
               }
-              renderHiddenItem={(data:any, rowMap: any) => (
+              renderHiddenItem={(data, rowMap: RowMap<Task>) => (
                 <View style={styles.rowBack}>
                   <TouchableOpacity
                     style={styles.backRightBtnRight}
@@ -142,14 +155,14 @@ const TasksScreen = ({ navigation, route }: any) => {
               previewRowKey={'0'}
               previewOpenValue={-40}
               previewOpenDelay={3000}
-              onRowDidOpen={onRowDidOpen}
-              onSwipeValueChange={onSwipeValueChange}
+              //onRowDidOpen={onRowDidOpen}
+              //onSwipeValueChange={onSwipeValueChange}
             />}
           </>}
       />}
     </>
   )
-};
+});
 
 
 const styles = StyleSheet.create({

@@ -1,21 +1,21 @@
 import React, { useRef, useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { dataSagaActions } from '../store/DataSagas/dataSagaActions';
+import { selectCurrentUser } from '../store/selectors';
 import { initStyles } from '../styles';
-import { State } from '../types';
 
 interface IProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AddListModal: React.FC<IProps> = ({showModal, setShowModal}) => {
+const AddListModal: React.FC<IProps> = React.memo(({showModal, setShowModal}) => {
   const dispatch = useDispatch();
-  const selectCurrentUser = (state: State) => state.user;
+
   const user = useSelector(selectCurrentUser, shallowEqual);
-  const [newListTitle, setNewListTitle] = useState('');
-  const inputRef: any = useRef(null);
+  const [newListTitle, setNewListTitle] = useState<string>('');
+  const inputRef = useRef<TextInput>(null);
   
   const handlePress = () => {
     if(newListTitle) {
@@ -33,7 +33,7 @@ const AddListModal: React.FC<IProps> = ({showModal, setShowModal}) => {
       setShowModal(false);
     }
     else {
-      inputRef.current.focus();
+      inputRef.current?.focus();
     }
   }
   return(
@@ -65,7 +65,8 @@ const AddListModal: React.FC<IProps> = ({showModal, setShowModal}) => {
       </View>
     </Modal>
   )
-};
+});
+
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,

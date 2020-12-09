@@ -1,26 +1,35 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { AuthStackParamList } from '../navigators/AuthStack';
 import { setErrors } from '../store/LoginSlice';
 import { getLoginInfo } from '../store/selectors';
 import { userSagaActions } from '../store/UsersSagas/userSagaActions';
-import { State } from '../types';
 
-const LoginScreen: React.FC = ({ navigation }: any)  => {
+type LoginScreenNavigationProp = StackNavigationProp<
+  AuthStackParamList,
+  'Login'
+>;
+
+interface IProps {
+  navigation: LoginScreenNavigationProp
+}
+
+const LoginScreen: React.FC<IProps> = React.memo(({ navigation })  => {
   const dispatch = useDispatch();
-  const [user, setUser] = useState({
+  const loginData = useSelector(getLoginInfo, shallowEqual);
+
+  const [user, setUser] = useState<{email: string, password: string}>({
     email: '',
     password: ''
   });
-  const [loading, setLoading] = useState(false);
-  const [showWarn, setShowWarn] = useState(false);
-  const loginData = useSelector(getLoginInfo, shallowEqual);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showWarn, setShowWarn] = useState<boolean>(false);
 
   useEffect(() => {
     setLoading(false);
     if(loginData.error) {
-      
       setShowWarn(true);
     //setTimeout(() => setShowWarn(false), 3000);
       dispatch(setErrors({error: false, errorMessage: ""}));
@@ -31,7 +40,7 @@ const LoginScreen: React.FC = ({ navigation }: any)  => {
     setShowWarn(false)
   }, [user])
 
-  const login = () => {
+  const handlePressLogin = () => {
     setLoading(true);
     dispatch({
       type: userSagaActions.SIGN_IN, 
@@ -64,7 +73,7 @@ const LoginScreen: React.FC = ({ navigation }: any)  => {
         {(loading && !showWarn) && <ActivityIndicator style={{marginBottom: 20}} size="large" color="#BFB393"/>}
         <TouchableOpacity
           style={styles.button}
-          onPress={login}
+          onPress={handlePressLogin}
         >
           <Text style={styles.text}>Log In</Text>
         </TouchableOpacity>
@@ -78,7 +87,8 @@ const LoginScreen: React.FC = ({ navigation }: any)  => {
       </View>
     </>
   );
-}
+});
+
 const styles = StyleSheet.create({
   registerView: {
     flex: 1,
