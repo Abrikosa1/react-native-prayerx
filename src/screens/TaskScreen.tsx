@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import React, { useCallback, useRef, useState } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import CommentComponent from '../components/CommentComponent';
 import { Comment } from '../types';
@@ -11,6 +11,7 @@ import { selectCommentsByTaskId, selectCurrentUser, selectTaskById } from '../st
 import { MainStackParamList } from '../navigators/MainStack';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
+import { initStyles } from '../styles';
 
 
 type TaskScreenNavigationProp = StackNavigationProp<
@@ -39,6 +40,7 @@ const TaskScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
   const [newCommentBody, setNewCommentBody] = useState<string>('');
   const [editComment, setEditComment] = useState<boolean>(false);
   const [editCommentId, setEditCommentId] = useState<number | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
  
   const handleChange = (newCommentText: string) => {
@@ -106,42 +108,60 @@ const TaskScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
   const onSwipeValueChange = (swipeData: any) => {
   };
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    dispatch({ type: dataSagaActions.LOAD_DATA, payload: { token: user.token }});
+    setRefreshing(false);
+    //wait(2000).then(() => setRefreshing(false));
+  }, []);
+
   return (
-    <View style={styles.taskContainer}>
+    <ScrollView 
+      style={styles.taskContainer}
+      refreshControl={
+        <RefreshControl 
+          refreshing={refreshing} 
+          onRefresh={onRefresh} 
+          progressBackgroundColor='#FFF'
+          colors={['#BFB393']}
+        />
+      }
+    >
+      
       <SwipeListView
         ListHeaderComponent={
           <>
             <TouchableOpacity 
-              style={[styles.taskHeader, styles.rightLeftPadding]}  
+              style={[styles.taskHeader, initStyles.rightLeftPadding]}  
               onPress={() => navigation.navigate('TaskSettingsScreen', {taskId: task.id})}>
               <Text style={styles.taskHeaderText}>{task.title}</Text>
               <Text style={styles.taskHeaderText}>{task.description}</Text>
               <Text style={styles.taskHeaderSmallText}>Tap to change title or description...</Text>
             </TouchableOpacity>
-            <View style={[styles.lastPrayed, styles.rightLeftPadding]}>
+            <View style={[styles.lastPrayed, initStyles.rightLeftPadding]}>
               <View style={styles.verticalLine}></View>
               <Text style={styles.lastPrayedText}>Last prayed & min ago</Text>
             </View>
             <View style={styles.taskInfo}>
-              <View style={[styles.taskInfoItem, styles.borderBottom, styles.borderRight, styles.borderTop, styles.rightLeftPadding]}>
+              <View style={[styles.taskInfoItem, styles.borderBottom, styles.borderRight, styles.borderTop, initStyles.rightLeftPadding]}>
                 <Text style={styles.taskInfoHeading}>July 25 2017</Text>
                 <Text style={styles.taskInfoDescription}>Date Added</Text>
                 <Text style={[styles.taskInfoDescription, styles.taskInfoOpenedFor]}>Opened for 4 days</Text>
               </View>
-              <View style={[styles.taskInfoItem, styles.borderBottom, styles.borderTop, styles.rightLeftPadding]}>
+              <View style={[styles.taskInfoItem, styles.borderBottom, styles.borderTop, initStyles.rightLeftPadding]}>
                 <Text style={styles.taskInfoHeading}>123</Text>
                 <Text style={styles.taskInfoDescription}>Times Prayed Total</Text>
               </View>
-              <View style={[styles.taskInfoItem, styles.borderBottom, styles.borderRight, styles.rightLeftPadding]}>
+              <View style={[styles.taskInfoItem, styles.borderBottom, styles.borderRight, initStyles.rightLeftPadding]}>
                 <Text style={styles.taskInfoHeading}>63</Text>
                 <Text style={styles.taskInfoDescription}>Times Prayed by Me</Text>
               </View>
-              <View style={[styles.taskInfoItem, styles.borderBottom, styles.rightLeftPadding]}>
+              <View style={[styles.taskInfoItem, styles.borderBottom, initStyles.rightLeftPadding]}>
                 <Text style={styles.taskInfoHeading}>60</Text>
                 <Text style={styles.taskInfoDescription}>Times Prayed by Others</Text>
               </View>
             </View>
-            <View style={[styles.members, styles.rightLeftPadding]}>
+            <View style={[styles.members, initStyles.rightLeftPadding]}>
               <Text style={styles.headingText}>Members</Text>
               <View style={styles.memberIcons}>
                 <View style={styles.memberIcon}></View>
@@ -150,7 +170,7 @@ const TaskScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
                 <View style={styles.memberIcon}></View>
               </View>
             </View>
-            <View style={[styles.commentsHeading, styles.rightLeftPadding]}>
+            <View style={[styles.commentsHeading, initStyles.rightLeftPadding]}>
               <Text style={styles.headingText}>Comments</Text>
             </View>
           </>
@@ -158,6 +178,7 @@ const TaskScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
         disableRightSwipe={true}
         useFlatList={true}
         showsVerticalScrollIndicator={false}
+        removeClippedSubviews={true}
         keyExtractor={comment => comment.id.toString()}
         data={comments} 
         extraData={comments}
@@ -171,13 +192,13 @@ const TaskScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
         renderHiddenItem={(data, rowMap: RowMap<Comment>) => (
           <View style={styles.rowBack}>
             <TouchableOpacity
-              style={[styles.backRightBtnRight, styles.editBtn]}
+              style={[styles.swipeBtn, styles.editBtn]}
               onPress={() => handleEditComment(rowMap, data.item.id, data.item)}
             >
               <Text style={styles.backRightBtnRightText}>Edit</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.backRightBtnRight}
+              style={styles.swipeBtn}
               onPress={() => deleteRow(rowMap, data.item.id, data.item.id)}
             >
               <Text style={styles.backRightBtnRightText}>Delete</Text>
@@ -195,7 +216,7 @@ const TaskScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
               name={'message-square'} size={20} color="#BFB393"
             />
             <TextInput
-              //ref={inputRef}
+              ref={inputRef}
               style={styles.input}
               placeholder="Add a comment..."
               underlineColorAndroid="transparent"
@@ -222,17 +243,14 @@ const TaskScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
           </View>
         }
       />  
-    </View>
+    </ScrollView>
   )
 });
 
 const styles = StyleSheet.create({
   taskContainer: {
-    flex: 1
-  },
-  rightLeftPadding: {
-    paddingRight: 15,
-    paddingLeft: 15,
+    flex: 1,
+    //height: '100%',
   },
   taskHeader: {
     flexDirection: 'column',
@@ -328,9 +346,6 @@ const styles = StyleSheet.create({
     color: '#72A8BC',
     fontFamily: 'SFUIText-Regular',
   },
-  membersText: {
-
-  },
   commentsHeading: {
     paddingTop: 20,
     paddingBottom: 15,
@@ -363,7 +378,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     height: '100%'
   },
-  backRightBtnRight: {
+  swipeBtn: {
     backgroundColor: '#AC5253',
     height: '100%',
     width: 80,

@@ -53,6 +53,21 @@ export function *watchLoadComments() {
     yield takeEvery(dataSagaActions.LOAD_COMMENTS, fetchDataSaga);
 }
 
+function *fetchAllDataSaga(action: PayloadAction<{token: string}>) {
+    try {
+        yield put({type:dataSagaActions.LOAD_TASKS, payload: {token: action.payload.token}});
+        yield put({type:dataSagaActions.LOAD_LISTS, payload: {token: action.payload.token}});
+        yield put({type:dataSagaActions.LOAD_COMMENTS, payload: {token: action.payload.token}});
+    } catch (e) {
+        console.log(e)
+        yield put({type: "FETCH_DATA_FAILED"});
+    }
+}
+
+export function *watchLoadData() {
+    yield takeEvery(dataSagaActions.LOAD_DATA, fetchAllDataSaga);
+}
+
 /*ADD_LIST */
 function fetchAddList(action: PayloadAction<{token: string, newList: List}>) {
     const url = "http://trello-purrweb.herokuapp.com/columns";
@@ -332,7 +347,6 @@ function fetchUpdateComment(action: PayloadAction<{ commentId: number, token: st
 function *updateCommentSaga(action: PayloadAction<{ commentId: number, token: string, newComment: Comment }>) {
     try {
         const data = yield call(fetchUpdateComment, action);
-        console.log(data)
         yield put({type:dataSagaActions.LOAD_COMMENTS, payload: {token: action.payload.token}});
     } catch (e) {
         console.log(e);

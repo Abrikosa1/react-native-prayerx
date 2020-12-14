@@ -59,7 +59,7 @@ const AddListModal: React.FC<IProps> = React.memo(({showModal, setShowModal}) =>
               style={initStyles.button}
               onPress={handlePress}
             >
-            <Text style={initStyles.text}>Submit</Text>
+            <Text style={initStyles.buttonText}>Submit</Text>
           </TouchableOpacity>
         </View>
       </View>

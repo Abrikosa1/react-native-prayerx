@@ -19,13 +19,22 @@ export const initStyles = StyleSheet.create({
     alignItems: 'center',
     fontFamily: 'SFUIText-Regular',
   },
-  text: {
+  buttonText: {
     textTransform: 'uppercase',
     color: '#FFFFFF',
-    fontFamily: 'SFUIText-Regular',
+    fontFamily: 'SFUIText-Bold',
+    fontSize: 12,
+    lineHeight: 14,
   },
   rightLeftPadding: {
     paddingRight: 15,
     paddingLeft: 15,
-  }
+  },
+  heading: {
+    fontSize: 32,
+    alignSelf: 'center',
+    marginTop: 25,
+    textTransform: 'uppercase',
+    fontFamily: 'SFUIText-Semibold',
+  },
 })

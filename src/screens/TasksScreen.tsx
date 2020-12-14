@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { View, Text, TextInput } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Comment, Task, User } from '../types';
+import { Task, User } from '../types';
 import Icon from 'react-native-vector-icons/AntDesign';
 import TaskCard from '../components/TaskCard';
 import { RowMap, SwipeListView } from 'react-native-swipe-list-view';
@@ -13,6 +13,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { MainStackParamList } from '../navigators/MainStack';
 import { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tabs';
 import { ListTabParamList } from '../navigators/ListTabNavigator';
+import { initStyles } from '../styles';
 
 
 type TasksScreenNavigationProp = CompositeNavigationProp<
@@ -64,7 +65,6 @@ const TasksScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
 
   const handleSubmit = () => {
     if(newTaskTitle) {
-      //dispatch(addTask({listId: route.params.itemId, title: newTaskTitle, username: currentUser.name}));
       dispatch({
         type: dataSagaActions.ADD_TASK, payload: { 
           token: user.token,
@@ -85,7 +85,7 @@ const TasksScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
   
   return (
     <>
-      <View style={styles.sectionStyle}>
+      <View style={styles.inputView}>
         <Icon style={styles.icon}
             name={'plus'} size={22} color="#72A8BC"
         />
@@ -128,10 +128,10 @@ const TasksScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
             {unCheckedTasks.length === 0 && <Text style={styles.messageText}>No unanswered prayers, press button to see answered...</Text>}
             {(checkedTasks.length > 0) && 
             <TouchableOpacity
-              style={styles.button}
+              style={[initStyles.button, styles.button]}
               onPress={() => setShowChecked(!showChecked)}
             >
-              <Text style={styles.text}>{showChecked ? 'Hide Answered Prayers' : 'Show Answered Prayers'}</Text>
+              <Text style={initStyles.buttonText}>{showChecked ? 'Hide Answered Prayers' : 'Show Answered Prayers'}</Text>
             </TouchableOpacity>} 
             {showChecked && <SwipeListView
               disableRightSwipe={true}
@@ -146,7 +146,7 @@ const TasksScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
                 <View style={styles.rowBack}>
                   <TouchableOpacity
                     style={styles.backRightBtnRight}
-                    onPress={() => deleteRow(rowMap, data.item.key, data.item.id)}
+                    onPress={() => deleteRow(rowMap, data.item.id, data.item.id)}
                   >
                     <Text style={styles.backRightBtnRightText}>Delete</Text>
                   </TouchableOpacity>
@@ -166,13 +166,7 @@ const TasksScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
 
 
 const styles = StyleSheet.create({
-  input: { 
-    flex: 1,
-    fontSize: 14,
-    paddingRight: 15,
-    fontFamily: 'SFUIText-Regular',
-  },
-  sectionStyle: {
+  inputView: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -182,32 +176,23 @@ const styles = StyleSheet.create({
     margin: 15,
     borderWidth: 1 , 
   },
+  input: { 
+    flex: 1,
+    fontSize: 14,
+    fontFamily: 'SFUIText-Regular',
+    paddingRight: 15,
+  },
   icon: {
     paddingLeft: 15,
     paddingRight: 15
   },
-  tasks: {
-    marginRight: 15,
-    marginLeft: 15
-  },
   button: {
-    height: 30,
-    backgroundColor: '#BFB393',
-    borderRadius: 15,
-    paddingRight: 15,
-    paddingLeft: 15,
+    paddingRight: 17,
+    paddingLeft: 17,
     marginTop: 20,
     marginBottom: 20,
     minWidth: 209,
-    justifyContent: 'center',
-    alignItems: 'center',
     alignSelf: 'center',
-    fontFamily: 'SFUIText-Regular',
-  },
-  text: {
-    textTransform: 'uppercase',
-    color: '#FFFFFF',
-    fontFamily: 'SFUIText-Regular',
   },
   rowBack: {
     alignItems: 'center',

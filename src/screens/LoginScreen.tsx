@@ -6,6 +6,7 @@ import { AuthStackParamList } from '../navigators/AuthStack';
 import { setErrors } from '../store/LoginSlice';
 import { getLoginInfo } from '../store/selectors';
 import { userSagaActions } from '../store/UsersSagas/userSagaActions';
+import { initStyles } from '../styles';
 
 type LoginScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,
@@ -51,17 +52,17 @@ const LoginScreen: React.FC<IProps> = React.memo(({ navigation })  => {
 
   return (
     <>
-      <Text style={styles.heading}>LOGIN</Text>
-      <View style={styles.registerView}>
+      <Text style={initStyles.heading}>LOGIN</Text>
+      <View style={styles.container}>
         <TextInput
-          style={styles.input}
+          style={initStyles.input}
           placeholder="Email..."
           keyboardType={'email-address'}
           underlineColorAndroid="transparent"
           onChangeText={email => setUser(user => ({...user, email: email}))}
         />
         <TextInput
-          style={styles.input}
+          style={initStyles.input}
           placeholder="Password..."
           underlineColorAndroid="transparent"
           secureTextEntry={true}
@@ -72,17 +73,17 @@ const LoginScreen: React.FC<IProps> = React.memo(({ navigation })  => {
         </View>}
         {(loading && !showWarn) && <ActivityIndicator style={{marginBottom: 20}} size="large" color="#BFB393"/>}
         <TouchableOpacity
-          style={styles.button}
+          style={initStyles.button}
           onPress={handlePressLogin}
         >
-          <Text style={styles.text}>Log In</Text>
+          <Text style={initStyles.buttonText}>Log In</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.createAccounBtn}
+          style={[initStyles.button, styles.createAccounBtn]}
           onPress={() => navigation.navigate('Register')}
         >
-          <Text style={styles.createAccounBtnText}>Create Account</Text>
+          <Text style={[initStyles.buttonText, styles.createAccounBtnText]}>Create Account</Text>
         </TouchableOpacity>
       </View>
     </>
@@ -90,31 +91,10 @@ const LoginScreen: React.FC<IProps> = React.memo(({ navigation })  => {
 });
 
 const styles = StyleSheet.create({
-  registerView: {
+  container: {
     flex: 1,
     justifyContent: 'center',
-  },
-  heading: {
-    fontSize: 32,
-    alignSelf: 'center',
-    marginTop: 25,
-    textTransform: 'uppercase',
-    fontFamily: 'SFUIText-Semibold',
-  },
-  input: { 
-    fontSize: 14,
-    height: 50, 
-    borderColor: '#E5E5E5', 
-    borderRadius: 10,
-    marginBottom: 15,
-    marginLeft: 15,
-    marginRight: 15,
-    padding: 15,
-    borderWidth: 1,
-    fontFamily: 'SFUIText-Regular'
-  },
-  alertView: {
-    borderColor: '#AC5253',
+    margin: 15,
   },
   errorMessage: {
     marginLeft: 15,
@@ -126,35 +106,14 @@ const styles = StyleSheet.create({
     color: '#AC5253',
     fontFamily: 'SFUIText-Regular'
   },
-  button: {
-    height: 30,
-    backgroundColor: '#BFB393',
-    borderRadius: 15,
-    marginRight: 15,
-    marginLeft: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    textTransform: 'uppercase',
-    color: '#FFFFFF',
-    fontFamily: 'SFUIText-Regular'
-  },
   createAccounBtn: {
-    height: 30,
     borderWidth: 1,
     borderColor: '#BFB393',
-    borderRadius: 15,
-    marginRight: 15,
-    marginLeft: 15,
+    backgroundColor: '#FFF',
     marginTop: 15,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   createAccounBtnText: {
-    textTransform: 'uppercase',
-    color: '#000',
-    fontFamily: 'SFUIText-Regular'
+    color: '#514D47',
   },
   warn: {
     color: 'red',

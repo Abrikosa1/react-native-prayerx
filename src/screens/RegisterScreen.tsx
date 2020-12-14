@@ -5,6 +5,7 @@ import Icon from "react-native-vector-icons/AntDesign";
 import { useDispatch } from "react-redux";
 import { AuthStackParamList } from "../navigators/AuthStack";
 import { userSagaActions } from "../store/UsersSagas/userSagaActions";
+import { initStyles } from "../styles";
 
 type RegisterScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,
@@ -44,33 +45,33 @@ const RegisterScreen: React.FC<IProps> = React.memo(({ navigation }) => {
           navigation.pop();
         }}
       />
-      <Text style={styles.heading}>Registration</Text>
-      <View style={styles.registerView}>
+      <Text style={initStyles.heading}>Registration</Text>
+      <View style={styles.container}>
         <TextInput
-          style={[styles.input, (showWarn && user.name==='') && styles.alertInput]}
+          style={[initStyles.input, (showWarn && user.name==='') && styles.alertInput]}
           placeholder="Username..."
           underlineColorAndroid="transparent"
           onChangeText={username => setUser(user => ({...user, name: username}))}
         />
         <TextInput
-          style={[styles.input, (showWarn && user.email==='') && styles.alertInput]}
+          style={[initStyles.input, (showWarn && user.email==='') && styles.alertInput]}
           placeholder="Email..."
           keyboardType={'email-address'}
           underlineColorAndroid="transparent"
           onChangeText={email => setUser(user => ({...user, email: email}))}
         />
         <TextInput
-          style={[styles.input, (showWarn && user.password==='') && styles.alertInput]}
+          style={[initStyles.input, (showWarn && user.password==='') && styles.alertInput]}
           placeholder="Password..."
           underlineColorAndroid="transparent"
           secureTextEntry={true}
           onChangeText={password => setUser(user => ({...user, password: password}))}
         />
         <TouchableOpacity
-          style={styles.button}
+          style={initStyles.button}
           onPress={register}
         >
-          <Text style={styles.text}>Register</Text>
+          <Text style={initStyles.buttonText}>Register</Text>
         </TouchableOpacity>
       </View>
     </>
@@ -79,60 +80,13 @@ const RegisterScreen: React.FC<IProps> = React.memo(({ navigation }) => {
 
 
 const styles = StyleSheet.create({
-  registerView: {
+  container: {
     flex: 1,
     justifyContent: 'center',
-  },
-  heading: {
-    fontSize: 32,
-    alignSelf: 'center',
-    marginTop: 25,
-    textTransform: 'uppercase',
-    fontFamily: 'SFUIText-Semibold',
-  },
-  input: { 
-    fontSize: 14,
-    height: 50, 
-    borderColor: '#E5E5E5', 
-    borderRadius: 10,
-    marginBottom: 15,
-    marginLeft: 15,
-    marginRight: 15,
-    padding: 15,
-    borderWidth: 1,
-    fontFamily: 'SFUIText-Regular'
+    margin: 15,
   },
   alertInput: {
     borderColor: '#AC5253',
-  },
-  button: {
-    height: 30,
-    backgroundColor: '#BFB393',
-    borderRadius: 15,
-    marginRight: 15,
-    marginLeft: 15,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  text: {
-    textTransform: 'uppercase',
-    color: '#FFFFFF',
-    fontFamily: 'SFUIText-Regular'
-  },
-  createAccounBtn: {
-    height: 30,
-    borderWidth: 1,
-    borderColor: '#BFB393',
-    borderRadius: 15,
-    marginRight: 15,
-    marginLeft: 15,
-    marginTop: 15,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  createAccounBtnText: {
-    textTransform: 'uppercase',
-    color: '#000',
   },
   warn: {
     color: 'red',
@@ -143,7 +97,6 @@ const styles = StyleSheet.create({
     top: 15,
     right: 15,
   },
-
 });
 
 export default RegisterScreen;

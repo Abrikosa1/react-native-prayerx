@@ -80,6 +80,7 @@ const TaskSettingsScreen: React.FC<IProps> = React.memo(({ navigation, route }) 
           style={styles.descriptionInput}
           placeholder='Type a description...'
           underlineColorAndroid="transparent"
+          multiline={true}
           onChangeText={title => handleChangeDescription(title)}
           defaultValue={newTaskDescription}
           maxLength={70}
@@ -91,13 +92,13 @@ const TaskSettingsScreen: React.FC<IProps> = React.memo(({ navigation, route }) 
         style={initStyles.button}
         onPress={handlePressRenameList}
       >
-        <Text style={initStyles.text}>Submit</Text>
+        <Text style={initStyles.buttonText}>Submit</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[initStyles.button, styles.removeButton]}
         onPress={handlePressRemoveTask}
       >
-        <Text style={initStyles.text}>Remove Task</Text>
+        <Text style={initStyles.buttonText}>Remove Task</Text>
       </TouchableOpacity>
     </View>
   )
@@ -111,7 +112,6 @@ const styles = StyleSheet.create({
   removeButton: {
     marginTop: 'auto',
     backgroundColor: '#AC5253',
-    fontFamily: 'SFUIText-Regular',
   },
   titleInput: {
     borderBottomColor: '#E5E5E5',

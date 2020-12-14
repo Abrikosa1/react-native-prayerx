@@ -22,7 +22,7 @@ const ListsScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
 
   return (
     <FlatList
-      style={{ marginBottom: 15}}
+      style={{ margin: 15 }}
       renderItem={({ item }) => {
         return (
           <View style={styles.list} >
@@ -46,11 +46,9 @@ const ListsScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   list: {
-    marginTop: 15,
-    marginLeft: 15,
-    marginRight: 15,
+    marginBottom: 15,
     borderColor: '#E5E5E5',
-    height: 58,
+    //height: 58,
     borderWidth: 1,
     borderRadius: 4,
   },

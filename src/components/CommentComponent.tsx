@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     flexDirection: 'row',
     alignItems: 'center',
-    
   },
   commentAuthorIcon: {
     backgroundColor: 'gray',
@@ -71,9 +70,5 @@ const styles = StyleSheet.create({
   commentText: {
     fontFamily: 'SFUIText-Regular'
   },
-  input: {
-    margin: 0,
-    padding: 0
-  }
 })
 export default CommentComponent;

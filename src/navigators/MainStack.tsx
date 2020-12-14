@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     fontFamily: 'SFUIText-Regular',
   },
   taskHeaderIcon: {
-    marginRight: 15
+    marginRight: 15,
   }
 });
 

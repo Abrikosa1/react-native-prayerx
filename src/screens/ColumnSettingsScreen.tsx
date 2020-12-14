@@ -69,13 +69,13 @@ const ColumnSettingsScreen: React.FC<IProps> = React.memo(({ navigation, route }
         style={initStyles.button}
         onPress={handlePressRenameList}
       >
-        <Text style={initStyles.text}>Submit</Text>
+        <Text style={initStyles.buttonText}>Submit</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[initStyles.button, styles.removeButton]}
         onPress={handlePressRemoveList}
       >
-        <Text style={initStyles.text}>Remove Column</Text>
+        <Text style={initStyles.buttonText}>Remove Column</Text>
       </TouchableOpacity>
     </View>
   )
@@ -89,7 +89,6 @@ const styles = StyleSheet.create({
   removeButton: {
     marginTop: 'auto',
     backgroundColor: '#AC5253',
-    fontFamily: 'SFUIText-Regular',
   }
 })
 export default ColumnSettingsScreen;
