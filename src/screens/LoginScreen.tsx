@@ -44,7 +44,7 @@ const LoginScreen: React.FC<IProps> = React.memo(({ navigation })  => {
   const handlePressLogin = () => {
     setLoading(true);
     dispatch({
-      type: userSagaActions.SIGN_IN, 
+      type: userSagaActions.SIGN_IN.type, 
       payload: {email: user.email, password: user.password}
     });
   };

@@ -10,7 +10,7 @@ const fetchDataUrl: any = {
     LOAD_COMMENTS: 'http://trello-purrweb.herokuapp.com/comments',
 }
 //LOAD_DATA
-function fetchData(action: PayloadAction<{token: string}>) {
+function fetchData(action: any) {
     return fetch(fetchDataUrl[action.type], {
         method: 'GET',
         headers: {
@@ -25,7 +25,7 @@ function fetchData(action: PayloadAction<{token: string}>) {
     .catch((error) => console.log('Error: ', error));
 }
 
-function *fetchDataSaga(action: PayloadAction<{token: string}>) {
+function *fetchDataSaga(action: any) {
     try {
         const data = yield call(fetchData, action);
         
@@ -42,22 +42,22 @@ function *fetchDataSaga(action: PayloadAction<{token: string}>) {
 }
 
 export function *watchLoadLists() {
-    yield takeEvery(dataSagaActions.LOAD_LISTS, fetchDataSaga);
+    yield takeEvery(dataSagaActions.LOAD_LISTS.type, fetchDataSaga);
 }
 
 export function *watchLoadTasks() {
-    yield takeEvery(dataSagaActions.LOAD_TASKS, fetchDataSaga);
+    yield takeEvery(dataSagaActions.LOAD_TASKS.type, fetchDataSaga);
 }
 
 export function *watchLoadComments() {
-    yield takeEvery(dataSagaActions.LOAD_COMMENTS, fetchDataSaga);
+    yield takeEvery(dataSagaActions.LOAD_COMMENTS.type, fetchDataSaga);
 }
 
 function *fetchAllDataSaga(action: PayloadAction<{token: string}>) {
     try {
-        yield put({type:dataSagaActions.LOAD_TASKS, payload: {token: action.payload.token}});
-        yield put({type:dataSagaActions.LOAD_LISTS, payload: {token: action.payload.token}});
-        yield put({type:dataSagaActions.LOAD_COMMENTS, payload: {token: action.payload.token}});
+        yield put({type:dataSagaActions.LOAD_TASKS.type, payload: {token: action.payload.token}});
+        yield put({type:dataSagaActions.LOAD_LISTS.type, payload: {token: action.payload.token}});
+        yield put({type:dataSagaActions.LOAD_COMMENTS.type, payload: {token: action.payload.token}});
     } catch (e) {
         console.log(e)
         yield put({type: "FETCH_DATA_FAILED"});
@@ -65,7 +65,7 @@ function *fetchAllDataSaga(action: PayloadAction<{token: string}>) {
 }
 
 export function *watchLoadData() {
-    yield takeEvery(dataSagaActions.LOAD_DATA, fetchAllDataSaga);
+    yield takeEvery(dataSagaActions.LOAD_DATA.type, fetchAllDataSaga);
 }
 
 /*ADD_LIST */
@@ -89,15 +89,15 @@ function fetchAddList(action: PayloadAction<{token: string, newList: List}>) {
 function *addListSaga(action: PayloadAction<{token: string, newList: List}>) {
     try {
         const data = yield call(fetchAddList, action);
-        yield put({type:dataSagaActions.LOAD_LISTS, payload: {token: action.payload.token}});
+        yield put({type:dataSagaActions.LOAD_LISTS.type, payload: {token: action.payload.token}});
     } catch (e) {
         console.log(e);
-        yield put({type: "ADD_LIST_FAILED"});
+        yield put({ type: "ADD_LIST_FAILED", e });
     }
 }
 
 export function *watchAddList() {
-    yield takeEvery(dataSagaActions.ADD_LIST, addListSaga);
+    yield takeEvery(dataSagaActions.ADD_LIST.type, addListSaga);
 }
 
 //REMOVE_LIST
@@ -120,7 +120,7 @@ function fetchRemoveList(action: PayloadAction<{id: number, token: string }>) {
 function *removeListSaga(action: PayloadAction<{id: number, token: string }>) {
     try {
         const data = yield call(fetchRemoveList, action);
-        yield put({type:dataSagaActions.LOAD_LISTS, payload: {token: action.payload.token}});
+        yield put({type:dataSagaActions.LOAD_LISTS.type, payload: {token: action.payload.token}});
     } catch (e) {
         console.log(e);
         yield put({type: "REMOVE_LIST_FAILED"});
@@ -128,7 +128,7 @@ function *removeListSaga(action: PayloadAction<{id: number, token: string }>) {
 }
 
 export function *watchRemoveList() {
-    yield takeEvery(dataSagaActions.REMOVE_LIST, removeListSaga);
+    yield takeEvery(dataSagaActions.REMOVE_LIST.type, removeListSaga);
 }
 
 //UPDATE_LIST
@@ -153,7 +153,7 @@ function *renameListSaga(action: PayloadAction<{id: number, token: string, newLi
 
     try {
         const data = yield call(fetchRenameList, action);
-        yield put({type:dataSagaActions.LOAD_LISTS, payload: {token: action.payload.token}});
+        yield put({type:dataSagaActions.LOAD_LISTS.type, payload: {token: action.payload.token}});
     } catch (e) {
         console.log(e);
         yield put({type: "RENAME_LIST_FAILED"});
@@ -161,7 +161,7 @@ function *renameListSaga(action: PayloadAction<{id: number, token: string, newLi
 }
 
 export function *watchRenameList() {
-    yield takeEvery(dataSagaActions.UPDATE_LIST, renameListSaga);
+    yield takeEvery(dataSagaActions.UPDATE_LIST.type, renameListSaga);
 }
 
 //ADD_TASK
@@ -185,7 +185,7 @@ function fetchAddTask(action: PayloadAction<{ token: string, newTask: Task }>) {
 function *addTaskSaga(action: PayloadAction<{ token: string, newTask: Task }>) {
     try {
         const data = yield call(fetchAddTask, action);
-        yield put({type:dataSagaActions.LOAD_TASKS, payload: {token: action.payload.token}});
+        yield put({type:dataSagaActions.LOAD_TASKS.type, payload: {token: action.payload.token}});
     } catch (e) {
         console.log(e);
         yield put({type: "ADD_TASK_FAILED"});
@@ -193,7 +193,7 @@ function *addTaskSaga(action: PayloadAction<{ token: string, newTask: Task }>) {
 }
 
 export function *watchAddTask() {
-    yield takeEvery(dataSagaActions.ADD_TASK, addTaskSaga);
+    yield takeEvery(dataSagaActions.ADD_TASK.type, addTaskSaga);
 }
 
 //REMOVE_TASK
@@ -216,7 +216,7 @@ function fetchRemoveTask(action: PayloadAction<{ id: number, token: string }>) {
 function *removeTaskSaga(action: PayloadAction<{ id: number, token: string }>) {
     try {
         const data = yield call(fetchRemoveTask, action);
-        yield put({type:dataSagaActions.LOAD_TASKS, payload: {token: action.payload.token}});
+        yield put({type:dataSagaActions.LOAD_TASKS.type, payload: {token: action.payload.token}});
     } catch (e) {
         console.log(e);
         yield put({type: "REMOVE_TASK_FAILED"});
@@ -224,7 +224,7 @@ function *removeTaskSaga(action: PayloadAction<{ id: number, token: string }>) {
 }
 
 export function *watchRemoveTask() {
-    yield takeEvery(dataSagaActions.REMOVE_TASK, removeTaskSaga);
+    yield takeEvery(dataSagaActions.REMOVE_TASK.type, removeTaskSaga);
 }
 
 
@@ -249,7 +249,7 @@ function fetchAddComment(action: PayloadAction<{ cardId: number, token: string, 
 function *addCommentSaga(action: PayloadAction<{ cardId: number, token: string, newComment: Comment }>) {
     try {
         const data = yield call(fetchAddComment, action);
-        yield put({type:dataSagaActions.LOAD_COMMENTS, payload: {token: action.payload.token}});
+        yield put({type:dataSagaActions.LOAD_COMMENTS.type, payload: {token: action.payload.token}});
     } catch (e) {
         console.log(e);
         yield put({type: "ADD_COMMENT_FAILED"});
@@ -257,7 +257,7 @@ function *addCommentSaga(action: PayloadAction<{ cardId: number, token: string, 
 }
 
 export function *watchAddComment() {
-    yield takeEvery(dataSagaActions.ADD_COMMENT, addCommentSaga);
+    yield takeEvery(dataSagaActions.ADD_COMMENT.type, addCommentSaga);
 }
 
 
@@ -281,7 +281,7 @@ function fetchRemoveComment(action: PayloadAction<{ id: number, token: string }>
 function *removeCommentSaga(action: PayloadAction<{ id: number, token: string }>) {
     try {
         const data = yield call(fetchRemoveComment, action);
-        yield put({type:dataSagaActions.LOAD_COMMENTS, payload: {token: action.payload.token}});
+        yield put({type:dataSagaActions.LOAD_COMMENTS.type, payload: {token: action.payload.token}});
     } catch (e) {
         console.log(e);
         yield put({type: "REMOVE_COMMENT_FAILED"});
@@ -289,7 +289,7 @@ function *removeCommentSaga(action: PayloadAction<{ id: number, token: string }>
 }
 
 export function *watchRemoveComment() {
-    yield takeEvery(dataSagaActions.REMOVE_COMMENT, removeCommentSaga);
+    yield takeEvery(dataSagaActions.REMOVE_COMMENT.type, removeCommentSaga);
 }
 
 
@@ -314,7 +314,7 @@ function fetchUpdateTask(action: PayloadAction<{ taskId: number, token: string, 
 function *updateTaskSaga(action: PayloadAction<{ taskId: number, token: string, newTask: Task }>) {
     try {
         const data = yield call(fetchUpdateTask, action);
-        yield put({type:dataSagaActions.LOAD_TASKS, payload: {token: action.payload.token}});
+        yield put({type:dataSagaActions.LOAD_TASKS.type, payload: {token: action.payload.token}});
     } catch (e) {
         console.log(e);
         yield put({type: "UPDATE_TASK_FAILED"});
@@ -322,7 +322,7 @@ function *updateTaskSaga(action: PayloadAction<{ taskId: number, token: string, 
 }
 
 export function *watchUpdateTask() {
-    yield takeEvery(dataSagaActions.UPDADE_TASK, updateTaskSaga);
+    yield takeEvery(dataSagaActions.UPDADE_TASK.type, updateTaskSaga);
 }
 
 
@@ -347,7 +347,7 @@ function fetchUpdateComment(action: PayloadAction<{ commentId: number, token: st
 function *updateCommentSaga(action: PayloadAction<{ commentId: number, token: string, newComment: Comment }>) {
     try {
         const data = yield call(fetchUpdateComment, action);
-        yield put({type:dataSagaActions.LOAD_COMMENTS, payload: {token: action.payload.token}});
+        yield put({type:dataSagaActions.LOAD_COMMENTS.type, payload: {token: action.payload.token}});
     } catch (e) {
         console.log(e);
         yield put({type: "UPDATE_COMMENT_FAILED"});
@@ -355,5 +355,5 @@ function *updateCommentSaga(action: PayloadAction<{ commentId: number, token: st
 }
 
 export function *watchUpdateComment() {
-    yield takeEvery(dataSagaActions.UPDATE_COMMENT, updateCommentSaga);
+    yield takeEvery(dataSagaActions.UPDATE_COMMENT.type, updateCommentSaga);
 }

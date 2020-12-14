@@ -30,9 +30,9 @@ export function * signInSaga(action: PayloadAction<{email: string, password: str
         if (data.hasOwnProperty('token')) {
             yield put(setCurrentUser(data));
             yield put(setErrors({error: false, errorMessage: ""}));
-            yield put({type: dataSagaActions.LOAD_LISTS, payload: {token: data.token}});
-            yield put({type: dataSagaActions.LOAD_TASKS, payload: {token: data.token}});
-            yield put({type: dataSagaActions.LOAD_COMMENTS, payload: {token: data.token}});
+            yield put({type: dataSagaActions.LOAD_LISTS.type, payload: {token: data.token}});
+            yield put({type: dataSagaActions.LOAD_TASKS.type, payload: {token: data.token}});
+            yield put({type: dataSagaActions.LOAD_COMMENTS.type, payload: {token: data.token}});
         }
         if(data.name === 'EntityNotFound'){
             yield put(setErrors({error: true, errorMessage: data.name}));
@@ -40,12 +40,12 @@ export function * signInSaga(action: PayloadAction<{email: string, password: str
 
     } catch (e) {
         console.log(e);
-        yield put({type: "SIGN_IN_FAILED"});
+        yield put({type: "SIGN_IN_FAILED", e });
     }
 }
 
 export function *watchSignIn() {
-    yield takeEvery(userSagaActions.SIGN_IN, signInSaga);
+    yield takeEvery(userSagaActions.SIGN_IN.type, signInSaga);
 }
 
 //SIGN_UP
@@ -75,5 +75,5 @@ export function * signUpSaga(action: PayloadAction<{email: string, name: string,
 }
 
 export function *watchSignUp() {
-    yield takeEvery(userSagaActions.SIGN_UP, signUpSaga);
+    yield takeEvery(userSagaActions.SIGN_UP.type, signUpSaga);
 }

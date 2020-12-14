@@ -51,7 +51,7 @@ const TaskScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
     if(newCommentBody) {
       if(!editComment) {
         dispatch({
-          type:dataSagaActions.ADD_COMMENT,
+          type:dataSagaActions.ADD_COMMENT.type,
           payload: {
             token: user.token, 
             cardId: task.id, 
@@ -64,7 +64,7 @@ const TaskScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
         setNewCommentBody('');
       } else {
         dispatch({
-          type:dataSagaActions.UPDATE_COMMENT,
+          type:dataSagaActions.UPDATE_COMMENT.type,
           payload: {
             token: user.token, 
             commentId: editCommentId, 
@@ -99,7 +99,7 @@ const TaskScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
 
   const deleteRow = (rowMap: RowMap<Comment>, rowKey: number, commentId: number) => {
       closeRow(rowMap, rowKey);
-      dispatch({type: dataSagaActions.REMOVE_COMMENT, payload: {token: user.token, id: commentId}});
+      dispatch({type: dataSagaActions.REMOVE_COMMENT.type, payload: {token: user.token, id: commentId}});
   };
 
   const onRowDidOpen = (rowKey: string) => {
@@ -110,7 +110,7 @@ const TaskScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    dispatch({ type: dataSagaActions.LOAD_DATA, payload: { token: user.token }});
+    dispatch({ type: dataSagaActions.LOAD_DATA.type, payload: { token: user.token }});
     setRefreshing(false);
     //wait(2000).then(() => setRefreshing(false));
   }, []);
@@ -354,11 +354,14 @@ const styles = StyleSheet.create({
     fontFamily: 'SFUIText-Regular',
   },
   addCommentContainer: {
+    marginTop: 'auto',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 15,
-    paddingBottom: 19
+    paddingBottom: 19,
+    borderBottomColor: '#E5E5E5',
+    borderBottomWidth: 1,
   },
   input: { 
     flex: 1,

@@ -43,7 +43,7 @@ const TaskSettingsScreen: React.FC<IProps> = React.memo(({ navigation, route }) 
   const handlePressRenameList = () => {
     if(newTaskTitle) {
       dispatch({
-        type:dataSagaActions.UPDADE_TASK, 
+        type:dataSagaActions.UPDADE_TASK.type, 
         payload: {
           token: user.token, 
           taskId: taskId,
@@ -60,7 +60,7 @@ const TaskSettingsScreen: React.FC<IProps> = React.memo(({ navigation, route }) 
   };
 
   const handlePressRemoveTask = () => {
-    dispatch({type: dataSagaActions.REMOVE_TASK, payload: {token: user.token, id: taskId}});
+    dispatch({type: dataSagaActions.REMOVE_TASK.type, payload: {token: user.token, id: taskId}});
     navigation.navigate('TasksScreen', {itemId: task.columnId});
   };
 

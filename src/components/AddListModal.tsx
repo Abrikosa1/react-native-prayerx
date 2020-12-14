@@ -20,7 +20,7 @@ const AddListModal: React.FC<IProps> = React.memo(({showModal, setShowModal}) =>
   const handlePress = () => {
     if(newListTitle) {
       dispatch({
-        type:dataSagaActions.ADD_LIST, 
+        type:dataSagaActions.ADD_LIST.type, 
         payload: {
           token: user.token, 
           newList: { 

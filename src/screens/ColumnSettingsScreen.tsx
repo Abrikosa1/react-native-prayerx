@@ -36,7 +36,7 @@ const ColumnSettingsScreen: React.FC<IProps> = React.memo(({ navigation, route }
   const handlePressRenameList = () => {
     if(newListTitle) {
       dispatch({
-        type:dataSagaActions.UPDATE_LIST, 
+        type:dataSagaActions.UPDATE_LIST.type, 
         payload: {
           token: user.token, 
           id: id,
@@ -51,7 +51,7 @@ const ColumnSettingsScreen: React.FC<IProps> = React.memo(({ navigation, route }
   };
 
   const handlePressRemoveList = () => {
-    dispatch({type: dataSagaActions.REMOVE_LIST, payload: {token: user.token, id: id}});
+    dispatch({type: dataSagaActions.REMOVE_LIST.type, payload: {token: user.token, id: id}});
     navigation.navigate('ListsScreen');
   };
 

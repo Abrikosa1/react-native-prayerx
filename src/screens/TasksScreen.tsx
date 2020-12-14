@@ -49,7 +49,7 @@ const TasksScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
 
   const deleteRow = (rowMap: RowMap<Task>, rowKey: number, taskId: number) => {
       closeRow(rowMap, rowKey);
-      dispatch({type: dataSagaActions.REMOVE_TASK, payload: {token: user.token, id: taskId}});
+      dispatch({type: dataSagaActions.REMOVE_TASK.type, payload: {token: user.token, id: taskId}});
   };
 
   const onRowDidOpen = (rowKey:number) => {
@@ -66,7 +66,7 @@ const TasksScreen: React.FC<IProps> = React.memo(({ navigation, route }) => {
   const handleSubmit = () => {
     if(newTaskTitle) {
       dispatch({
-        type: dataSagaActions.ADD_TASK, payload: { 
+        type: dataSagaActions.ADD_TASK.type, payload: { 
           token: user.token,
           newTask: { 
             title: newTaskTitle,

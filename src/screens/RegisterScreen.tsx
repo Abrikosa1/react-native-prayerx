@@ -26,7 +26,7 @@ const RegisterScreen: React.FC<IProps> = React.memo(({ navigation }) => {
   });
   const register = () => {
     if(user.name && user.email && user.password) {
-      dispatch({type: userSagaActions.SIGN_UP, payload: user});
+      dispatch({type: userSagaActions.SIGN_UP.type, payload: user});
       navigation.navigate("Login");
     }
     else {
